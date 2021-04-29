@@ -1,0 +1,104 @@
+<!-- HTML, CSS, JavaScript w/ jQuery -->
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Direct Mail Order Details Tab</title>
+
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/custom-select.css">
+    <style>
+    /* CSS */
+
+    </style>
+  </head>
+  <body>
+    <!-- HTML -->
+
+    <div id="container">
+      <div id="navbar"></div>
+      <div id="content">
+        <div id="content-head">
+
+        </div>
+        <div id="content-body">
+          <div id="tabs">
+            <div id="questions" class="tab">Questions</div>
+            <div id="coupons" class="tab">Coupons</div>
+            <div id="approve" class="tab">Approve Artwork</div>
+            <div id="orderdetails" class="tab active">Order Details</div>
+          </div>
+          <div id="content-container">
+            <div id="detail-questions">
+              <!-- Questions go here -->
+              <div class="question">
+                <div class="thumb-summary">
+                  <div class="heading-img">
+                    <img id="heading-thumb" src="img/Artwork_1_1029_49_49_1010358.jpg" />
+                    <a href="#" class="link-small">View Artwork</a>
+                  </div>
+                  <div class="thumb-summary-details">
+                    <p class="thumb-summary-details-item"><b class="thumb-summary-details-title">Product:&nbsp;</b>Magnet Postcard</p>
+                    <p class="thumb-summary-details-item"><b class="thumb-summary-details-title">Service:&nbsp;</b>Direct Mail</p>
+                    <p class="thumb-summary-details-item">We just need a few more details to complete this item. Please answer the below questions to finalize this order.</p>
+
+                  </div>
+                </div>
+
+
+              </div>
+
+
+              <div class="question">
+                <div class="question-text">How many pieces would you like to mail?</div>
+                <div class="qty-select-area">
+                  <select id="qty-select">
+
+                  </select>
+
+                  <div id="qty-price">
+                    <b class="bold-text">Subtotal:&nbsp;</b><span id="st" class="subTotal">$3,200.00</span>
+                  </div>
+                </div>
+
+                <input type="number" id="custom-price-input" placeholder="Enter a custom quantity..."/>
+
+                <div class="question-button">
+                  Next
+                </div>
+
+
+              </div>
+            </div>
+            <div id="detail-summary">
+              <!-- Order details go here -->
+
+              <div id="summary-area">
+                <div id="summary-head">
+                  
+                  <h4 class="heading">Order Details</h4>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js" type="text/javascript"></script>
+  <script src="./js/custom-select.min.js" type="module"></script>
+  <script src="./js/app.js" type="module"></script>
+  <script src="./js/price-grid.js" type="module"></script>
+
+  <!-- Tabulator -->
+
+
+  <script>
+    // JavaScript w/ jQuery
+
+
+
+  </script>
+  </body>
+</html>
