@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <title>Direct Mail Order Details Tab</title>
 
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/custom-select.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/custom-select.css">
     <style>
     /* CSS */
 
@@ -63,21 +63,49 @@
 
                 <input type="number" id="custom-price-input" placeholder="Enter a custom quantity..."/>
 
-                <div class="question-button">
-                  Next
+
+
+                <div class="question-button" id="qty-next-button">
+                  Continue
                 </div>
 
 
               </div>
+
+              <!-- SCRATCH PAD -->
+
+
+
+
             </div>
             <div id="detail-summary">
               <!-- Order details go here -->
 
               <div id="summary-area">
                 <div id="summary-head">
-                  
                   <h4 class="heading">Order Details</h4>
                 </div>
+
+                <div class="summary-area" id="mail-summary">
+                  <div class="summary-area-head">Mailing</div>
+                  <div class="summary-item" id="qty">
+                    <div class="summary-item-text summary-item-title" id="qty-title">Quantity:</div>
+                    <div class="summary-item-text summary-item-value" id="qty-value">10,000</div>
+                  </div>
+                  <div class="summary-item" id="ppp">
+                    <div class="summary-item-text summary-item-title" id="ppp-title">Price Per Piece:</div>
+                    <div class="summary-item-text summary-item-value" id="ppp-value">$0.32</div>
+                  </div>
+                  <div class="summary-item" id="tmc">
+                    <div class="summary-item-text summary-item-title bold" id="tmc-title">Total Mailing Cost:</div>
+                    <div class="summary-item-text summary-item-value bold" id="tmc-value">$3,200.00</div>
+                  </div>
+                </div>
+
+                <div class="summary-area" id="bottom-summary">
+
+                </div>
+
               </div>
             </div>
           </div>
@@ -88,6 +116,7 @@
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js" type="text/javascript"></script>
   <script src="./js/custom-select.min.js" type="module"></script>
+  <!-- <script src="./js/simplepicker.js" type="module"></script> -->
   <script src="./js/app.js" type="module"></script>
   <script src="./js/price-grid.js" type="module"></script>
 

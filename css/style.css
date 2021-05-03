@@ -226,3 +226,30 @@ html, body {
     min-width:200px;
     transition:.3s;
 }
+
+.summary-area-head {
+    margin-top:20px;
+    margin-bottom:10px;
+}
+
+.summary-item {
+    margin-top:10px;
+    display:flex;
+}
+
+.summary-item-text {
+    font-size:10pt;
+}
+
+.summary-item-value {
+    margin-left:auto;
+}
+
+.bold {
+    font-weight:bold;
+}
+
+.date-picker {
+    margin-top:20px;
+    height:30px;
+}
