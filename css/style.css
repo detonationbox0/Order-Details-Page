@@ -81,7 +81,8 @@ html, body {
 
 #detail-questions {
     width:100%;
-    height:100%;
+    /* height:100%; */
+    max-height:Calc(100vh - 120px);
     /* background-color:lightblue; */
     overflow-y:auto;
 }
@@ -205,6 +206,19 @@ html, body {
 .question-button {
     background-color:#354B85;
     color:white;
+    border-radius:4px;
+    width:150px;
+    margin-top:20px;
+    padding:5px;
+    text-align:center;
+    font-size:10pt;
+    transition: 0.3s;
+}
+
+.question-set {
+    background-color:rgba(53, 75, 132, 0.1);
+    color:#354B85;
+    border-radius:4px;
     width:150px;
     margin-top:20px;
     padding:5px;
@@ -250,6 +264,21 @@ html, body {
 }
 
 .date-picker {
-    margin-top:20px;
+    /* margin-top:20px; */
     height:30px;
+}
+
+#wk-select-area {
+    /* display:flex; */
+    /* align-items: center; */
+    padding-top:20px;
+    /* justify-content: center; */
+}
+
+.q-description {
+    /* margin-left:30px; */
+    margin-top:10px;
+    font-size:10pt;
+    font-weight:bolder;
+    /* font-size:10pt; */
 }

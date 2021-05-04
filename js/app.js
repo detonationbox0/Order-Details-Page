@@ -16,7 +16,8 @@ const pricing = priceGrid.getGrid();
 const orderDetails = {
     qty:10000, // Quantity
     ppp:.32, /// Price per Piece
-    tmc: 3200 // Total Mailing Cost
+    tmc: 3200, // Total Mailing Cost
+    date:"2021-05-01"
 }
 
 // Order Data Handler
@@ -28,6 +29,22 @@ var orderDetailsHandler = {
         //`property` is the property that has changed
         //`value` is the new value of the property
 
+        /** ===---------------------------------------------------------------===
+                 * Quantity has been updated ↓
+                 */
+
+        if (property === 'date') {
+            // Value must be a string.
+            if (typeof value !== 'string') {
+                throw new Error('Date must be a string.');
+            }
+            // This item was added to DOM when the user clicked the next button on q1.
+            // Update the DOM with locale string version of `value`
+            $("#date-value").text(value);
+
+            console.log(`date has been updated to ${value}`);
+
+        }
 
         /** ===---------------------------------------------------------------===
          * Quantity has been updated ↓
@@ -240,10 +257,11 @@ $("#qty-next-button").on("click", function() {
             <div class="question-text">When would you like your first in-home week to be?</div>
             <!-- Already got a nice drop down library, let's use that to pick the week --> 
             <div id="wk-select-area">
-                <input class="date-picker" id="wk-select" type="date" /
+                <input class="date-picker" id="wk-select" type="date" value="2021-05-01" min="2021-05-01"/>
+                <div class="q-description">Your pieces will hit homes the week of <span id="in-home-day">May 1st, 2021.</span></div>
             </div>
             <div class="question-button" id="week-next-button">
-            Next Question...
+            Continue
             </div>
         </div>
     `
@@ -256,13 +274,47 @@ $("#qty-next-button").on("click", function() {
     });
 
     // Shall we disable (or hide) the next button?
-    $(this).hide();
+    // Let's change it to a message letting the user know they can still change it
 
-    
+    $(this).removeClass("question-button").addClass("question-set").off(); //.off() removes this listener
 
+    // At this point, the next question (in-home week) will be displayed
+    // It has a min value of May 1, 2021 (to prevent conflict with expiration dates)
+    // Therefore, we should add the DOM elements for this and default it to May 1, 2021
+    $("#qty").before(`
+        <div class="summary-item" id="date">
+            <div class="summary-item-text summary-item-title" id="date-title">First In-Home Week:</div>
+            <div class="summary-item-text summary-item-value" id="date-value">2021-05-01</div>
+        </div>
+    `)
 
+});
 
+/** 
+ * User chooses a date
+ */
+$(document).on("change", "#wk-select", function() {
+    var newDate = $(this).val(); // Ex: 2021-07-29
+
+    // We need a pretty string, ex: May 1st, 2021.
+    var prettyDate = moment(newDate, "YYYY-MM-DD").format("MMMM Do, YYYY");
+
+    // Update text below input with pretty date
+    $("#in-home-day").text(prettyDate);
+
+    // Update order details
+    orderProxy.date = newDate;
+
+    // alert(newDate);
 })
+
+/** 
+ * User Clicks the Next button from the In Home Date question
+ */
+ $(document).on("click", "#week-next-button", function() {
+    
+})
+
 
 /** ===--------------------------------------------------------------------------------------------===
  * CUSTOM FUNCTIONS ↓
