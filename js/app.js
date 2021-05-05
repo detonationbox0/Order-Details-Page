@@ -146,7 +146,7 @@ var orderProxy = new Proxy(orderDetails, orderDetailsHandler);
 
 $(function() {
     console.log( "ready!" );
-
+    scrollToBottom();
     //Init
     
     // Load price points to "How many pieces?" question
@@ -257,7 +257,7 @@ $("#qty-next-button").on("click", function() {
             <div class="question-text">When would you like your first in-home week to be?</div>
             <!-- Already got a nice drop down library, let's use that to pick the week --> 
             <div id="wk-select-area">
-                <input class="date-picker" id="wk-select" type="date" value="2021-05-01" min="2021-05-01"/>
+                <input class="date-picker" id="wk-select" type="week" value="2021-W18" min="2021-W18"/>
                 <div class="q-description">Your pieces will hit homes the week of <span id="in-home-day">May 1st, 2021.</span></div>
             </div>
             <div class="question-button" id="week-next-button">
@@ -270,7 +270,7 @@ $("#qty-next-button").on("click", function() {
         // This callback was created for a reason which is no longer relevant
         // Might come in handy down the line, so I'll keep it for now.
         console.log("We added the next question...")
-
+        scrollToBottom();
     });
 
     // Shall we disable (or hide) the next button?
@@ -296,14 +296,17 @@ $("#qty-next-button").on("click", function() {
 $(document).on("change", "#wk-select", function() {
     var newDate = $(this).val(); // Ex: 2021-07-29
 
+    console.log(newDate);
+
     // We need a pretty string, ex: May 1st, 2021.
-    var prettyDate = moment(newDate, "YYYY-MM-DD").format("MMMM Do, YYYY");
+    var prettyDate = moment(newDate).format("MMMM Do, YYYY");
+    // console.log();
 
     // Update text below input with pretty date
     $("#in-home-day").text(prettyDate);
 
     // Update order details
-    orderProxy.date = newDate;
+    orderProxy.date = prettyDate;
 
     // alert(newDate);
 })
@@ -312,7 +315,54 @@ $(document).on("change", "#wk-select", function() {
  * User Clicks the Next button from the In Home Date question
  */
  $(document).on("click", "#week-next-button", function() {
+
+
+    // Get the current subtotal "Total Mailing Cost"
+    var totalCost = orderProxy.tmc;
+    var weeks = "";
+
+    for (var i = 1; i <= 10; i++) {
+        console.log(i);
+
+        // Calculate price per week
+        // Convert to currency
+        var ppw = totalCost / i;
+        var prettyPpw = ppw.toLocaleString('en-US', {
+            style: 'currency',
+            currency: 'USD',
+          });
+        console.log(prettyPpw)
+
+        var weeks = weeks + `
+        <div class="num-week-choice">
+            <div class="num-week-week">${i} Week${i == 1 ? "" : "s"}</div>
+            <div class="num-week-cost">${prettyPpw}${i == 1 ? " Up Front" : "/Week"}</div>
+        </div>
+        `
+    }
+
+
+    // Create element to append to DOM
+    var dom = `<div class="question">
+                    <div class="question-text">How many weeks would you like to mail and pay for?</div>
+                    <div class="num-week">
+                        ${weeks}
+                    </div>
+                    <div class="question-button" id="numweek-next-button">
+                        Continue
+                    </div>
+                </div>` 
+
+    console.log(dom);
+
     
+    addQuestion(dom, function() {
+        // This callback was created for a reason which is no longer relevant
+        // Might come in handy down the line, so I'll keep it for now.
+        console.log("We added the next question...")
+        scrollToBottom();
+    });
+    $(this).removeClass("question-button").addClass("question-set").off();
 })
 
 
@@ -387,8 +437,21 @@ function customQuantity (kInput) {
     console.log(kInput);
 }
 
+/**
+ * Add a Question to the DOm
+ * @param {String} dom Dom elements to append to the questions area
+ * @callback {*} Returns nothing
+ */
+
 function addQuestion(dom, callback){
     $("#detail-questions").append(dom);
 
     callback();
+}
+
+function scrollToBottom() {
+    // https://stackoverflow.com/questions/270612/scroll-to-bottom-of-div
+    $("#detail-questions").animate({
+        scrollTop: $('#detail-questions')[0].scrollHeight}, "slow"); // Scroll to bottom
+    $(".question").last().fadeIn('slow')
 }

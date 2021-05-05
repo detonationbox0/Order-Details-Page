@@ -85,6 +85,7 @@ html, body {
     max-height:Calc(100vh - 120px);
     /* background-color:lightblue; */
     overflow-y:auto;
+    transition:.3s;
 }
 
 #detail-summary {
@@ -119,11 +120,16 @@ html, body {
 }
 
 .question {
+    display:none;
     margin:30px;
     border: 1px solid #D1DAE9;
     padding:30px;
     border-radius:20px;
 
+}
+
+.unhide-question {
+    display:block;
 }
 
 
@@ -281,4 +287,37 @@ html, body {
     font-size:10pt;
     font-weight:bolder;
     /* font-size:10pt; */
+}
+
+.num-week {
+    display:flex;
+    flex-wrap:wrap;
+    margin-top:20px;
+}
+
+.num-week-choice {
+    display:flex;
+    flex-direction: column;
+    padding:10px;
+    border: 1px solid #354B85;
+    border-radius:5px;
+    font-size:10pt;
+    align-items: center;
+    /* min-width:100px; */
+    width:40%;
+    margin-right:20px;
+    margin-bottom:20px;
+    cursor:pointer;
+    transition:.3s;
+}
+
+.num-week-choice:hover {
+    color:white;
+    background-color:#354B85;
+}
+
+.num-week-week {
+    font-weight:bolder;
+    font-size:9.5pt;
+    text-transform: uppercase;
 }
