@@ -175,9 +175,11 @@ html, body {
 
 #qty-price {
     display:flex;
-    align-items: center;
+    flex-direction:column;
+    /* align-items: center; */
     justify-content: center;
-    width:100%;
+    /* width:100%; */
+    margin-left:20px;
     /* height:100%; */
 }
 
@@ -230,6 +232,7 @@ html, body {
     padding:5px;
     text-align:center;
     font-size:10pt;
+    pointer-events:none;
     transition: 0.3s;
 }
 
@@ -238,14 +241,24 @@ html, body {
     filter: brightness(1.25);
 }
 
-#custom-price-input {
-    display:none;
-    margin-top:20px;
-    padding: 0.3em;
-    font-size:12pt;
-    min-width:200px;
-    transition:.3s;
+
+.qty-price-area {
+    margin-bottom:5px;
 }
+
+
+
+#qty-warning {
+    display:none;
+    color:crimson;
+    /* background-color:crimson; */
+    /* text-align:center; */
+    margin-top:2px;
+    font-size:8pt;
+    /* padding:2px; */
+    width:210px;
+}
+
 
 .summary-area-head {
     margin-top:20px;
@@ -320,4 +333,16 @@ html, body {
     font-weight:bolder;
     font-size:9.5pt;
     text-transform: uppercase;
+}
+
+.input-format {
+    max-height:20px;
+    padding: 0.3em;
+    font-size:12pt;
+    min-width:200px;
+    transition:.3s;
+}
+
+.input-warn {
+    border:1px solid red;
 }

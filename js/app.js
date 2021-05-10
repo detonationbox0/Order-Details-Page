@@ -5,25 +5,33 @@
 import * as priceGrid from "./price-grid.js"
 const pricing = priceGrid.getGrid();
 
+console.log(pricing);
 
 /**
- * I'm always learning new things. Let's use something called a JavaScript Proxy
- * https://www.javascripttutorial.net/es6/javascript-proxy/ to update the 
- * Order Details area on the right side of the page.
+ ___   ___   ___   _     _     
+| |_) | |_) / / \ \ \_/ \ \_/
+|_|   |_| \ \_\_/ /_/ \  |_| 
  */
-//#region 
-// Order Data
+
+/**
+ * Let's use this
+ * https://www.javascripttutorial.net/es6/javascript-proxy/
+ * to update the Order Details area on the right side of the page.
+ */
+
+// ORDER OBJECT
 const orderDetails = {
+    //#region 
     qty:10000, // Quantity
     ppp:.32, /// Price per Piece
     tmc: 3200, // Total Mailing Cost
-    date:"2021-05-01"
+    date:"Week 18, 2021"
+    //#endregion
 }
 
-// Order Data Handler
-// When any property of the orderDetails object changes, update the
-// Order details DOM elements
+// ORDER HANDLER
 var orderDetailsHandler = {
+    //#region
     set(target, property, value) {
         //`target` is the object
         //`property` is the property that has changed
@@ -42,6 +50,9 @@ var orderDetailsHandler = {
             // Update the DOM with locale string version of `value`
             $("#date-value").text(value);
 
+            // Update the button here.
+            $("#week-next-button").removeClass("question-button").text("Saved!").addClass("question-set");
+
             console.log(`date has been updated to ${value}`);
 
         }
@@ -58,6 +69,14 @@ var orderDetailsHandler = {
             // This item is in DOM from the start.
             // Update the DOM with locale string version of `value`
             $("#qty-value").text(value.toLocaleString());
+
+            // Update the button here.
+            $("#qty-next-button").removeClass("question-button").text("Saved!").addClass("question-set");
+
+            // if ($("#qty-next-button").text().includes("Continue")) {
+            // };
+
+
 
             console.log(`qty has been updated to ${value}`);
 
@@ -132,24 +151,27 @@ var orderDetailsHandler = {
         // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy/handler/set
         return true;
     }
+    //#endregion
 }
 
+// ORDER PROXY
 var orderProxy = new Proxy(orderDetails, orderDetailsHandler);
+// Updating the properties of orderProxy updates the Order Details area on the right side of the page.
 
-//#endregion
-
-
-
-
-
-
-
+// Document is ready...
 $(function() {
+    //#region
     console.log( "ready!" );
     scrollToBottom();
     //Init
     
-    // Load price points to "How many pieces?" question
+    /**
+     * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     * Brian didn't want to have a drop down for the Quantity question.
+     * Removing this code.
+     */
+    //#region
+    /*
     for (var i = 0; i < pricing.length; i++) {
 
         
@@ -174,16 +196,26 @@ $(function() {
 
     // Create a nice drop down out of the quantity selection
     customSelect('#qty-select');
-
+    */
+   //#endregion
     
-
+//#endregion
 });
 
+
+/**
+ * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+ * Removed the drop down onChange event because
+ * Brian doesn't want the quantities in a drop down.
+ * It's a good idea but a chase for another day.
+ */
 /**
  * User chooses a new quantity
  */
+//#region
+/*
 $("#qty-select").on("change", function() {
-
+    
     // Get the quantity chosen
     var qty = $(this).val();
     // console.log(qty);
@@ -216,15 +248,21 @@ $("#qty-select").on("change", function() {
         console.log("A custom price...")
     }
     
+   
 })
+*/
+//#endregion
 
 /**
  * User is typing in their new quantity
  * We catch the keypress to give a live-subtotal
  */
+
 $('#custom-price-input').keyup(function() {
+    //#region
     var kInput = Number(this.value);
     customQuantity(kInput);
+    //#endregion
 });
 
 /**
@@ -235,69 +273,132 @@ $('#custom-price-input').keyup(function() {
  */
 
 $('#custom-price-input').on("change", function() {
+    //#region
     var kInput = Number(this.value);
     customQuantity(kInput);
-    
+    //#endregion
 });
 
 /** 
- * User clicks on the Next button from the Quantity question.
+ * User clicks on the Continue button from the Quantity question.
  */
-
 $("#qty-next-button").on("click", function() {
+    //#region
 
-    // If the chosen value is less than the smallest price in the grid,
-    // We should yell at the user... End of day, but hopefully I remember
-    // to come back and put that here.
 
-    // Build the In Home Week question, and add it to the dom
-    var dom = `
+
+
+
+    // Only if this button says "Continue" should we add
+    // the next question
+    console.log($(this).text());
+    
+    if ($(this).text().includes("Continue")) {
+        // Build the In Home Week question, and add it to the dom
+
+        /*
+        The "date" type input does not work on Firefox or Safari.
+        Why not??
+        Jim used Drop Downs but I don't like it. He does have
+        a datepicker though for the coupon expirations... it looks like
+        he used https://angular-ui.github.io/bootstrap/versioned-docs/1.0.0/#/datepicker
+
+        I do not know Angular (I shall learn it someday soon), but jQuery UI has one
+        I'll use that instead.
+
+            > Only show the available days ("Wednesdays")
+        */
+
+        var dom = `
         <!-- When would you like your first in-home week to be? -->
         <div class="question">
             <div class="question-text">When would you like your first in-home week to be?</div>
             <!-- Already got a nice drop down library, let's use that to pick the week --> 
-            <div id="wk-select-area">
-                <input class="date-picker" id="wk-select" type="week" value="2021-W18" min="2021-W18"/>
-                <div class="q-description">Your pieces will hit homes the week of <span id="in-home-day">May 1st, 2021.</span></div>
+            <div id="wk-select-area">` +
+                //<input class="date-picker" id="wk-select" type="week" min="2021-W18"/>
+                `
+                <input type="text" id="datepicker" class="input-format">
             </div>
-            <div class="question-button" id="week-next-button">
+            <div class="question-set" id="week-next-button">
             Continue
             </div>
         </div>
-    `
+        `
 
-    addQuestion(dom, function() {
+        addQuestion(dom, function() {
         // This callback was created for a reason which is no longer relevant
         // Might come in handy down the line, so I'll keep it for now.
-        console.log("We added the next question...")
-        scrollToBottom();
-    });
+            console.log("We added the next question...")
+            // At this point, the next question (in-home week) will be displayed
+            // It has a min value of May 1, 2021 (to prevent conflict with expiration dates)
+            // Therefore, we should add the DOM elements for this and default it to May 1, 2021
+            
 
-    // Shall we disable (or hide) the next button?
-    // Let's change it to a message letting the user know they can still change it
+            // Instantiate the datepicker
+            $( "#datepicker" ).datepicker({
+                inline: false,
+                showWeek:true,
+                beforeShowDay: function(day) {
+                    var day = day.getDay();
+                    var disableDays = [0,1,2,4,5,6]
+                    if (disableDays.includes(day)) {
+                        return [false, ""]
+                    } else {
+                        return [true, ""]
+                    }
+                 }
+            });
+            
 
-    $(this).removeClass("question-button").addClass("question-set").off(); //.off() removes this listener
+            scrollToBottom();
+        });
 
-    // At this point, the next question (in-home week) will be displayed
-    // It has a min value of May 1, 2021 (to prevent conflict with expiration dates)
-    // Therefore, we should add the DOM elements for this and default it to May 1, 2021
-    $("#qty").before(`
-        <div class="summary-item" id="date">
-            <div class="summary-item-text summary-item-title" id="date-title">First In-Home Week:</div>
-            <div class="summary-item-text summary-item-value" id="date-value">2021-05-01</div>
-        </div>
-    `)
+    }
 
+    // Get the quantity from the input, and update the proxy with it.
+    var chosenQty = $("#custom-price-input").val();
+    var chosenPPP = $("#ppp").attr("value");
+
+    // Update Proxys with values
+    orderProxy.qty = Number(chosenQty);
+    orderProxy.ppp = Number(chosenPPP);
+    orderProxy.tmc = Number(chosenQty) * Number(chosenPPP);
+
+
+
+    //#endregion
 });
 
 /** 
  * User chooses a date
  */
-$(document).on("change", "#wk-select", function() {
+$(document).on("change", "#datepicker", function() {
+    //#region
+
+
+    // If #date doesn't exist yet, make it:
+    if(!$("#date").length) {
+        $("#qty").before(`
+            <div class="summary-item" id="date">
+                <div class="summary-item-text summary-item-title" id="date-title">First In-Home Week:</div>
+                <div class="summary-item-text summary-item-value" id="date-value">Week 18, 2021</div>
+            </div>
+        `)
+    }
+
     var newDate = $(this).val(); // Ex: 2021-07-29
 
     console.log(newDate);
 
+    // Enable the button
+    $("#week-next-button").removeClass("question-set").addClass("question-button");
+    //orderProxy.date = newDate;
+
+    if (!$("#week-next-button").text().includes("Continue")) {
+        $("#week-next-button").text("Update");
+    }
+
+    /*
     // We need a pretty string, ex: May 1st, 2021.
     var prettyDate = moment(newDate).format("MMMM Do, YYYY");
     // console.log();
@@ -307,63 +408,121 @@ $(document).on("change", "#wk-select", function() {
 
     // Update order details
     orderProxy.date = prettyDate;
-
-    // alert(newDate);
+    */
+    //#endregion
 })
+
+
+
+
 
 /** 
  * User Clicks the Next button from the In Home Date question
  */
  $(document).on("click", "#week-next-button", function() {
+    //#region
+
+    // Update the week proxy with the chosen date
+    var chosenDate = $("#datepicker").val();
+    orderProxy.date = chosenDate;
+
+    // Only add the next question if it's not there already...
+    // console.log($("#wk-question").length);
+
+    if(!$("#wk-question").length) {
+        // console.log("If not " + $("#wk-question").length + " then add the question...");
+        // Get the current subtotal "Total Mailing Cost"
+        var totalCost = orderProxy.tmc;
+        var weeks = "";
+
+        for (var i = 1; i <= 10; i++) {
+            // console.log(i);
+
+            // Calculate price per week
+            // Convert to currency
+            var ppw = totalCost / i;
+            var prettyPpw = ppw.toLocaleString('en-US', {
+                style: 'currency',
+                currency: 'USD',
+            });
+            // console.log(prettyPpw)
+
+            var weeks = weeks + `
+            <div class="num-week-choice">
+                <div class="num-week-week">${i} Week${i == 1 ? "" : "s"}</div>
+                <div class="num-week-cost">${prettyPpw}${i == 1 ? " Up Front" : " / Week"}</div>
+            </div>
+            `
+        }
 
 
-    // Get the current subtotal "Total Mailing Cost"
-    var totalCost = orderProxy.tmc;
-    var weeks = "";
+        // Create element to append to DOM
+        var dom = `<div class="question" id="wk-question">
+                        <div class="question-text">How many weeks would you like to mail and pay for?</div>
+                        <div class="num-week">
+                            ${weeks}
+                        </div>
+                        <div class="question-button" id="numweek-next-button">
+                            Continue
+                        </div>
+                    </div>` 
 
-    for (var i = 1; i <= 10; i++) {
-        console.log(i);
+        // console.log(dom);
 
-        // Calculate price per week
-        // Convert to currency
-        var ppw = totalCost / i;
-        var prettyPpw = ppw.toLocaleString('en-US', {
-            style: 'currency',
-            currency: 'USD',
-          });
-        console.log(prettyPpw)
 
-        var weeks = weeks + `
-        <div class="num-week-choice">
-            <div class="num-week-week">${i} Week${i == 1 ? "" : "s"}</div>
-            <div class="num-week-cost">${prettyPpw}${i == 1 ? " Up Front" : "/Week"}</div>
-        </div>
-        `
+        addQuestion(dom, function() {
+            // This callback was created for a reason which is no longer relevant
+            // Might come in handy down the line, so I'll keep it for now.
+            console.log("We added the next question...")
+            scrollToBottom();
+        });
+        $(this).removeClass("question-button").text("Saved!").addClass("question-set");
     }
 
+    
 
-    // Create element to append to DOM
+    //#endregion
+})
+
+$(document).on("click", "#numweek-next-button", function() {
+    //#region
     var dom = `<div class="question">
-                    <div class="question-text">How many weeks would you like to mail and pay for?</div>
-                    <div class="num-week">
-                        ${weeks}
-                    </div>
-                    <div class="question-button" id="numweek-next-button">
+                    
+                    <div class="question-button auto-fill">
                         Continue
                     </div>
-                </div>` 
+                </div>`
 
-    console.log(dom);
-
-    
     addQuestion(dom, function() {
         // This callback was created for a reason which is no longer relevant
         // Might come in handy down the line, so I'll keep it for now.
         console.log("We added the next question...")
         scrollToBottom();
     });
-    $(this).removeClass("question-button").addClass("question-set").off();
-})
+
+    $(this).removeClass("question-button").text("Saved!").addClass("question-set").off(); //.off() removes this listener
+
+    //#endregion
+});
+
+
+$(document).on("click", ".auto-fill", function() {
+    //#region
+    var dom = `<div class="question">
+                    <div class="question-button auto-fill">
+                        Continue
+                    </div>
+                </div>`
+    $(this).removeClass("question-button").text("Saved!").addClass("question-set").off(); //.off() removes this listener
+    addQuestion(dom, function() {
+        // This callback was created for a reason which is no longer relevant
+        // Might come in handy down the line, so I'll keep it for now.
+        console.log("We added the next question...")
+        scrollToBottom();
+    });
+    //#endregion
+});
+
 
 
 /** ===--------------------------------------------------------------------------------------------===
@@ -378,6 +537,7 @@ $(document).on("change", "#wk-select", function() {
  */
 
 function updateSubTotal (newPrice, turnLocal) {
+    //#region
     if (turnLocal) {
         var st = newPrice.toLocaleString('en-US', {
             style: 'currency',
@@ -387,16 +547,21 @@ function updateSubTotal (newPrice, turnLocal) {
     } else {
         $(".subTotal").text(newPrice);
     }
+    //#endregion
 }
+
 
 /**
  * Takes a new Quantity number, figures out the price level in the price grid
  * and updates the properties of our orderDetails proxy and Subtotal values
+ *     * This is a hold-over from when I had a drop down with a "custom" option.
+ *     * This is now being run any time the user updates the quantity.
+ * 
  * @param {Number} kInput The new quantity number
  */
 
 function customQuantity (kInput) {
-
+    //#region
     // This logic was written largely before I implemented the Proxy object.
     // Could probably be improved upon, but I've got a deadline
 
@@ -408,9 +573,27 @@ function customQuantity (kInput) {
 
             // Mutiply kInput by pricing[i].ppp, update subtotal
             updateSubTotal((kInput * pricing[i].ppp), true)
+            
+            // Update the Price per Piece with the new .ppp value
+            $("#ppp").text(intToPrice(pricing[i].ppp)).attr("value", pricing[i].ppp);
+
+            // This is allowed. Hide warning to the user
+            $("#qty-warning").slideUp("fast");
+            $("#custom-price-input").removeClass("input-warn");
+
+            // Enable the Continue button
+            $("#qty-next-button").removeClass("question-set").addClass("question-button");
+            // If the button's text isn't Continue, change to Update
+            if (!$("#qty-next-button").text().includes("Continue")) {
+                $("#qty-next-button").text("Update");
+            }
+
+            //The proxy should update when the user clicks Continue or Save.
+            /*
             orderProxy.tmc = (kInput * pricing[i].ppp); // Update proxy (updates Order Details to the right)
             orderProxy.ppp = pricing[i].ppp;
             orderProxy.qty = kInput;
+            */
             break;
 
         } else if (kInput < pricing[0].qty) {
@@ -418,24 +601,66 @@ function customQuantity (kInput) {
 
             // Mutiply kInput by pricing[0].ppp, update subtotal
             updateSubTotal((kInput * pricing[0].ppp), true)
-            orderProxy.tmc = (kInput * pricing[0].ppp); // Update proxy (updates Order Details to the right)
-            orderProxy.ppp = pricing[i].ppp;
-            orderProxy.qty = kInput;
+            $("#ppp").text(intToPrice(pricing[0].ppp)).attr("value", pricing[i].ppp);
+
+            // This is not allowed. Show warning to the user
+            $("#qty-warning").slideDown("fast");
+            $("#custom-price-input").addClass("input-warn");
+
+            // If the Continue button states "Saved!", simply update the text to "Update"
+            if ($("#qty-next-button").text() == "Saved!") {
+                $("#qty-next-button").text("Update")
+            } else {
+                // Disable the Continue button
+                $("#qty-next-button").removeClass("question-button").addClass("question-set");
+
+            }
+
+            //The proxy should update when the user clicks Continue or Save.
+
             break;
 
         } else if (kInput > pricing[pricing.length - 1].qty) {
             console.log(`${kInput} is above maximum...`)
             // Mutiply kInput by pricing[pricing.length - 1].ppp, update subtotal
             updateSubTotal((kInput * pricing[pricing.length - 1].ppp), true)
+            $("#ppp").text(intToPrice(pricing[pricing.length - 1].ppp)).attr("value", pricing[i].ppp);
+
+            // This is allowed. Hide warning to the user
+            $("#qty-warning").slideUp("fast");
+            $("#custom-price-input").removeClass("input-warn");
+            // Enable the Continue button
+            $("#qty-next-button").removeClass("question-set").addClass("question-button");
+            if (!$("#qty-next-button").text().includes("Continue")) {
+                $("#qty-next-button").text("Update");
+            }
+
+            //The proxy should update when the user clicks Continue or Save.
+            /*
             orderProxy.tmc = (kInput * pricing[pricing.length - 1].ppp); // Update proxy (updates Order Details to the right)
             orderProxy.ppp = pricing[pricing.length - 1].ppp;
             orderProxy.qty = kInput;
+            */
             break;
+            
         }
     }
 
     console.log(kInput);
+    //#endregion
 }
+
+/**
+ * Logic for the buttons
+ */
+$(document).on("change", ".q", function() {
+    
+    console.log("Changed...")
+});
+
+/**
+ * Logic for the buttons
+ */
 
 /**
  * Add a Question to the DOm
@@ -444,14 +669,36 @@ function customQuantity (kInput) {
  */
 
 function addQuestion(dom, callback){
+    //#region
     $("#detail-questions").append(dom);
 
     callback();
+    //#endregion
 }
 
 function scrollToBottom() {
+    //#region
     // https://stackoverflow.com/questions/270612/scroll-to-bottom-of-div
     $("#detail-questions").animate({
         scrollTop: $('#detail-questions')[0].scrollHeight}, "slow"); // Scroll to bottom
-    $(".question").last().fadeIn('slow')
+    $(".question").last().fadeIn('slow');
+    //#endregion
 }
+
+/**
+ * Formats a Number object as a US currency string ($0.00)
+ * @param {Number} int The number to convert to a USD price.
+ * @returns {String} The number converted to a USD price.
+ */
+function intToPrice(int) {
+    if (typeof int !== 'number') {
+        throw new Error('You are trying to convert NAN to a price.');
+    }
+    return int.toLocaleString('en-US', {
+        style: 'currency',
+        currency: 'USD',
+    });
+    
+}
+
+

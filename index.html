@@ -7,6 +7,10 @@
 
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/custom-select.css">
+
+    <!-- Datepicker -->
+    <link rel="stylesheet" href="js/jquery-datepicker/jquery-ui.min.css">
+
     <style>
     /* CSS */
 
@@ -52,22 +56,35 @@
               <div class="question unhide-question">
                 <div class="question-text">How many pieces would you like to mail?</div>
                 <div class="qty-select-area">
-                  <select id="qty-select">
+                  
+                  <!-- Brian doesn't want the drop down because it will take too much time. -->
+                  <!-- <select id="qty-select">
 
-                  </select>
+                  </select> -->
+
+                  <div class="qty-input-warn">
+                    <input type="number" class="input-format" id="custom-price-input" q="1" placeholder="Enter a quantity..."/>
+                    <p class="warn" id="qty-warning">Minimum quantity: <span id="qty-min">500</span></p>
+                  </div>
+
 
                   <div id="qty-price">
-                    <b class="bold-text">Subtotal:&nbsp;</b><span id="st" class="subTotal">$3,200.00</span>
+                    <div class="qty-price-area"><b class="bold-text">Price per Piece&nbsp;</b><span id="ppp" >-</span></div>
+                    <!-- <div class="qty-price-area"><b class="bold-text">Subtotal:&nbsp;</b><span id="st" class="subTotal">-</span></div> -->
+                    <a href="#" class="link-small">Show Price Guide</a>
                   </div>
                 </div>
 
-                <input type="number" id="custom-price-input" placeholder="Enter a custom quantity..."/>
+                
 
 
 
-                <div class="question-button" id="qty-next-button">
+                <div class="question-set" qb="1" id="qty-next-button">
                   Continue
                 </div>
+
+
+
               </div>
 
               <!-- SCRATCH PAD -->
@@ -110,15 +127,15 @@
                   <div class="summary-area-head">Mailing</div>
                   <div class="summary-item" id="qty">
                     <div class="summary-item-text summary-item-title" id="qty-title">Quantity:</div>
-                    <div class="summary-item-text summary-item-value" id="qty-value">10,000</div>
+                    <div class="summary-item-text summary-item-value" id="qty-value">-</div>
                   </div>
                   <div class="summary-item" id="ppp">
                     <div class="summary-item-text summary-item-title" id="ppp-title">Price Per Piece:</div>
-                    <div class="summary-item-text summary-item-value" id="ppp-value">$0.32</div>
+                    <div class="summary-item-text summary-item-value" id="ppp-value">-</div>
                   </div>
                   <div class="summary-item" id="tmc">
                     <div class="summary-item-text summary-item-title bold" id="tmc-title">Total Mailing Cost:</div>
-                    <div class="summary-item-text summary-item-value bold" id="tmc-value">$3,200.00</div>
+                    <div class="summary-item-text summary-item-value bold" id="tmc-value">-</div>
                   </div>
                 </div>
 
@@ -135,6 +152,9 @@
     
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js" type="text/javascript"></script>
+
+  <script src="./js/jquery-datepicker/jquery-ui.min.js" type="text/javascript"></script>
+
   <script src="./js/custom-select.min.js" type="module"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js" integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ==" crossorigin="anonymous"></script>
   <!-- <script src="./js/simplepicker.js" type="module"></script> -->
