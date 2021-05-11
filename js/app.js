@@ -22,10 +22,17 @@ console.log(pricing);
 // ORDER OBJECT
 const orderDetails = {
     //#region 
+
     qty:10000, // Quantity
-    ppp:.32, /// Price per Piece
+    ppp:.32, // Price per Piece
+    date:"Week 18, 2021", // In Home Date
+    weeks:1, // Mailing Weeks
     tmc: 3200, // Total Mailing Cost
-    date:"Week 18, 2021"
+    tc:3200, // Total Cost
+    wmc:3200, // Weelky Mailing Cost
+    eq:10000, // Extras Quantity
+    eppp:.32, // Extras Price Per Piece
+    tpc:.32, // Total Print Cost
     //#endregion
 }
 
@@ -36,26 +43,6 @@ var orderDetailsHandler = {
         //`target` is the object
         //`property` is the property that has changed
         //`value` is the new value of the property
-
-        /** ===---------------------------------------------------------------===
-                 * Quantity has been updated ↓
-                 */
-
-        if (property === 'date') {
-            // Value must be a string.
-            if (typeof value !== 'string') {
-                throw new Error('Date must be a string.');
-            }
-            // This item was added to DOM when the user clicked the next button on q1.
-            // Update the DOM with locale string version of `value`
-            $("#date-value").text(value);
-
-            // Update the button here.
-            $("#week-next-button").removeClass("question-button").text("Saved!").addClass("question-set");
-
-            console.log(`date has been updated to ${value}`);
-
-        }
 
         /** ===---------------------------------------------------------------===
          * Quantity has been updated ↓
@@ -82,6 +69,8 @@ var orderDetailsHandler = {
 
         }
 
+
+
         /** ===---------------------------------------------------------------===
          * Price per Piece has been updated ↓
          */
@@ -93,12 +82,29 @@ var orderDetailsHandler = {
             }
             // This item is in DOM from the start.
             // Update the DOM with locale string version of `value`
-            $("#ppp-value").text(value.toLocaleString('en-US', {
-                style: 'currency',
-                currency: 'USD',
-            }));
+            $("#ppp-value").text(intToPrice(value));
 
             console.log(`ppp has been updated to ${value}`);
+
+        }
+
+                /** ===---------------------------------------------------------------===
+         * Date has been updated ↓
+         */
+
+        if (property === 'date') {
+            // Value must be a string.
+            if (typeof value !== 'string') {
+                throw new Error('Date must be a string.');
+            }
+            // This item was added to DOM when the user clicked the next button on q1.
+            // Update the DOM with locale string version of `value`
+            $("#date-value").text(value);
+
+            // Update the button here.
+            $("#week-next-button").removeClass("question-button").text("Saved!").addClass("question-set");
+
+            console.log(`date has been updated to ${value}`);
 
         }
 
@@ -114,32 +120,88 @@ var orderDetailsHandler = {
             }
             // This item is in DOM from the start.
             // Update the DOM with locale string version of `value`
-            $("#tmc-value").text(value.toLocaleString('en-US', {
-                style: 'currency',
-                currency: 'USD',
-            }));
+            $("#tmc-value").text(intToPrice(value));
 
             console.log(`tmc has been updated to ${value}`);
         }
 
 
         /** ===---------------------------------------------------------------===
-         * Price per Piece has been updated ↓
+         * Mailing Weeks has been updated ↓
          */
 
-        if (property === 'ppp') {
+         if (property === 'weeks') {
             // Value must be a number.
             if (typeof value !== 'number') {
-                throw new Error('Total Mailing Cost must be a number.');
+                throw new Error('Price per Piece must be a number.');
             }
             // This item is in DOM from the start.
             // Update the DOM with locale string version of `value`
-            $("#ppp-value").text(value.toLocaleString('en-US', {
-                style: 'currency',
-                currency: 'USD',
-            }));
+            $("#weeks-value").text(value);
 
-            console.log(`ppp has been updated to ${value}`);
+            console.log(`weeks has been updated to ${value}`);
+
+            // Any time the week is changed, re-enable the button
+            $("#week-next-button").removeClass("question-button").text("Saved!").addClass("question-set");
+
+        }
+
+        /** ===---------------------------------------------------------------===
+         * Total Cost has been updated ↓
+         */
+
+         if (property === 'tc') {
+            // Value must be a number.
+            if (typeof value !== 'number') {
+                throw new Error('Total Cost must be a number.');
+            }
+            // This item is in DOM from the start.
+            // Update the DOM with locale string version of `value`
+            $("#tc-value").text(intToPrice(value));
+
+            console.log(`tc has been updated to ${value}`);
+
+        }
+
+        /** ===---------------------------------------------------------------===
+         * Weekly Mailing Cost has been updated ↓
+         */
+
+         if (property === 'wmc') {
+            // Value must be a number.
+            if (typeof value !== 'number') {
+                throw new Error('Weekly Mailing Price must be a number.');
+            }
+            // This item is in DOM from the start.
+            // Update the DOM with locale string version of `value`
+            $("#wmc-value").text(intToPrice(value));
+
+            console.log(`wmc has been updated to ${value}`);
+
+        }
+
+
+        /** ===---------------------------------------------------------------===
+         * Extras Quantity has been updated ↓
+         */
+        if (property === 'eq') {
+            // Value must be a number.
+            if (typeof value !== 'number') {
+                throw new Error('Quantity must be a number.');
+            }
+            // This item is in DOM from the start.
+            // Update the DOM with locale string version of `value`
+            $("#eq-value").text(value.toLocaleString());
+
+            // Update the button here.
+            $("#extras-next-button").removeClass("question-button").text("Saved!").addClass("question-set");
+
+            // if ($("#qty-next-button").text().includes("Continue")) {
+            // };
+
+
+
+            console.log(`qty has been updated to ${value}`);
 
         }
 
@@ -157,6 +219,12 @@ var orderDetailsHandler = {
 // ORDER PROXY
 var orderProxy = new Proxy(orderDetails, orderDetailsHandler);
 // Updating the properties of orderProxy updates the Order Details area on the right side of the page.
+
+/**
+  __    ___   ___   _     _   __     __   _____  _   ___   _     
+ / /\  | |_) | |_) | |   | | / /`   / /\   | |  | | / / \ | |\ | 
+/_/--\ |_|   |_|   |_|__ |_| \_\_, /_/--\  |_|  |_| \_\_/ |_| \|
+ */
 
 // Document is ready...
 $(function() {
@@ -188,7 +256,7 @@ $(function() {
                 <option value="custom">Choose a Custom Quantity...</option>
             `)
 
-            $("#custom-price-input").attr("max", pricing[i].qty);
+            $("#qty-qty-input").attr("max", pricing[i].qty);
         }
         console.log(pricing[i]);
     }
@@ -221,7 +289,7 @@ $("#qty-select").on("change", function() {
     // console.log(qty);
     // As long as Custom wasn't chosen...
     if (qty != "custom") {
-        $("#custom-price-input").slideUp();
+        $("#qty-qty-input").slideUp();
         // Find the price per piece
         for (var i = 0; i < pricing.length; i++) {
             if (pricing[i].qty == qty){
@@ -243,7 +311,7 @@ $("#qty-select").on("change", function() {
         $("#st").text("-");
 
         // Show the input field
-        $("#custom-price-input").slideDown();
+        $("#qty-qty-input").slideDown();
 
         console.log("A custom price...")
     }
@@ -258,10 +326,11 @@ $("#qty-select").on("change", function() {
  * We catch the keypress to give a live-subtotal
  */
 
-$('#custom-price-input').keyup(function() {
+$('#qty-qty-input').keyup(function() {
     //#region
     var kInput = Number(this.value);
-    customQuantity(kInput);
+    console.log("")
+    customQuantity(kInput, "qty");
     //#endregion
 });
 
@@ -272,10 +341,10 @@ $('#custom-price-input').keyup(function() {
  * input element
  */
 
-$('#custom-price-input').on("change", function() {
+$('#qty-qty-input').on("change", function() {
     //#region
     var kInput = Number(this.value);
-    customQuantity(kInput);
+    customQuantity(kInput, "qty");
     //#endregion
 });
 
@@ -313,15 +382,14 @@ $("#qty-next-button").on("click", function() {
         <!-- When would you like your first in-home week to be? -->
         <div class="question">
             <div class="question-text">When would you like your first in-home week to be?</div>
-            <!-- Already got a nice drop down library, let's use that to pick the week --> 
             <div id="wk-select-area">` +
                 //<input class="date-picker" id="wk-select" type="week" min="2021-W18"/>
                 `
                 <input type="text" id="datepicker" class="input-format">
             </div>
-            <div class="question-set" id="week-next-button">
-            Continue
-            </div>
+                <div class="question-set" id="week-next-button">
+                Continue
+                </div>
         </div>
         `
 
@@ -338,6 +406,7 @@ $("#qty-next-button").on("click", function() {
             $( "#datepicker" ).datepicker({
                 inline: false,
                 showWeek:true,
+                // Hide every day but Wednesday
                 beforeShowDay: function(day) {
                     var day = day.getDay();
                     var disableDays = [0,1,2,4,5,6]
@@ -356,8 +425,8 @@ $("#qty-next-button").on("click", function() {
     }
 
     // Get the quantity from the input, and update the proxy with it.
-    var chosenQty = $("#custom-price-input").val();
-    var chosenPPP = $("#ppp").attr("value");
+    var chosenQty = $("#qty-qty-input").val();
+    var chosenPPP = $("#qty-ppp").attr("value");
 
     // Update Proxys with values
     orderProxy.qty = Number(chosenQty);
@@ -370,6 +439,19 @@ $("#qty-next-button").on("click", function() {
 });
 
 /** 
+ * User clicks on the Continue button from the Quantity question.
+ */
+ $(document).on("click", "#extras-next-button", function() {
+    //#region
+    var chosenQty = $("#extras-qty-input").val();
+    var chosenPPP = $("#extras-ppp").attr("value");
+
+    // Update Proxys with values
+    orderProxy.eq = Number(chosenQty);
+    orderProxy.eppp = Number(chosenPPP);
+    orderProxy.tpc = Number(chosenQty) * Number(chosenPPP);
+ });
+/** 
  * User chooses a date
  */
 $(document).on("change", "#datepicker", function() {
@@ -378,7 +460,7 @@ $(document).on("change", "#datepicker", function() {
 
     // If #date doesn't exist yet, make it:
     if(!$("#date").length) {
-        $("#qty").before(`
+        $("#tmc").before(`
             <div class="summary-item" id="date">
                 <div class="summary-item-text summary-item-title" id="date-title">First In-Home Week:</div>
                 <div class="summary-item-text summary-item-value" id="date-value">Week 18, 2021</div>
@@ -448,7 +530,7 @@ $(document).on("change", "#datepicker", function() {
             // console.log(prettyPpw)
 
             var weeks = weeks + `
-            <div class="num-week-choice">
+            <div class="num-week-choice" weeks="${i}" cost="${ppw}">
                 <div class="num-week-week">${i} Week${i == 1 ? "" : "s"}</div>
                 <div class="num-week-cost">${prettyPpw}${i == 1 ? " Up Front" : " / Week"}</div>
             </div>
@@ -462,9 +544,9 @@ $(document).on("change", "#datepicker", function() {
                         <div class="num-week">
                             ${weeks}
                         </div>
-                        <div class="question-button" id="numweek-next-button">
-                            Continue
-                        </div>
+                            <div class="question-set" id="numweek-next-button">
+                                Continue
+                            </div>
                     </div>` 
 
         // console.log(dom);
@@ -484,28 +566,12 @@ $(document).on("change", "#datepicker", function() {
     //#endregion
 })
 
-$(document).on("click", "#numweek-next-button", function() {
-    //#region
-    var dom = `<div class="question">
-                    
-                    <div class="question-button auto-fill">
-                        Continue
-                    </div>
-                </div>`
 
-    addQuestion(dom, function() {
-        // This callback was created for a reason which is no longer relevant
-        // Might come in handy down the line, so I'll keep it for now.
-        console.log("We added the next question...")
-        scrollToBottom();
-    });
-
-    $(this).removeClass("question-button").text("Saved!").addClass("question-set").off(); //.off() removes this listener
-
-    //#endregion
-});
-
-
+/*
+This area was used for debugging
+*/
+//#region
+/*
 $(document).on("click", ".auto-fill", function() {
     //#region
     var dom = `<div class="question">
@@ -522,6 +588,185 @@ $(document).on("click", ".auto-fill", function() {
     });
     //#endregion
 });
+*/
+//#endregion
+
+/** 
+ * User Chooses a Number of Weeks
+ */
+$(document).on("click", ".num-week-choice", function() {
+    //#region
+    // Grab the chosen data from this tag
+    var weeks = $(this).attr("weeks");
+    var cost = $(this).attr("cost");
+
+    var weeklyCost = intToPrice(orderDetails.tmc / Number(weeks));
+
+
+    if (!$("#weeks").length) {
+        $("#tmc").before(`
+            <div class="summary-item" id="weeks">
+                <div class="summary-item-text summary-item-title" id="weeks-title">Mailing weeks:</div>
+                <div class="summary-item-text summary-item-value" id="weeks-value">-</div>
+            </div>
+        `);
+
+        // Make DOM for the Total Cost, and the Bottom Summary (including Weekly Mailing Cost)
+        var dom = `<div class="summary-area" id="summary-total">
+        <div class="summary-item" id="tc">
+        <div class="summary-item-text summary-item-title" id="tc-title">Total Cost:</div>
+        <div class="summary-item-text summary-item-value" id="tc-value">-</div>
+        </div>
+        </div>
+
+
+        <div class="summary-area" id="bottom-summary">
+        <div class="summary-item" id="wmc">
+        <div class="summary-item-text summary-item-title bold" id="wmc-title">Weekly Mailing Cost:</div>
+        <div class="summary-item-text summary-item-value bold" id="wmc-value">-</div>
+        </div>
+        </div>`
+
+        $("#mail-summary").after(dom);
+
+
+
+    }
+
+
+    // Unset any ".num-week-selected"
+    $(".num-week-selected").removeClass("num-week-selected");
+    // Make this one appear selected
+    $(this).addClass("num-week-selected");
+
+
+
+    if (!$("#numweek-next-button").text().includes("Continue")) {
+        $("#numweek-next-button").text("Update");
+    }
+
+    $("#numweek-next-button").removeClass("question-set").addClass("question-button");
+    //#endregion
+    // alert(`Weeks: ${weeks} Cost: ${cost}`);
+});
+
+// On Number of Weeks Continue button press
+
+$(document).on("click", "#numweek-next-button", function() {
+
+    //#region
+    var weeks = $(".num-week-selected").attr("weeks");
+
+    orderProxy.weeks = Number(weeks);
+    orderProxy.tc = orderDetails.tmc;
+    orderProxy.wmc = orderDetails.tmc / Number(weeks);
+
+    // Add the next question, if it's not already there.
+
+    var dom = `<div class="question">
+                <div class="question-text">Would you like extras?</div>
+                
+                <div class="extras-buttons">
+                    <div class="question-button extras-button" id="extras-yes-button">
+                        Yes
+                    </div>
+                    <div class="question-button extras-button" id="extras-no-button">
+                        No
+                    </div>
+                </div>
+
+                <div id="extras-input-area">
+                    <div class="question-text">How many extra pieces would you like?</div>
+                    <div class="qty-select-area">
+                    <div class="qty-input-warn">
+                        <input type="number" class="input-format" id="extras-qty-input" placeholder="Enter a quantity..."/>
+                        <p class="warn" id="extras-warning">Minimum quantity: <span id="qty-min">500</span></p>
+                    </div>
+                    <div class="qty-price">
+                        <div class="qty-price-area"><b class="bold-text">Price per Piece&nbsp;</b><span id="extras-ppp" >-</span></div>
+                        <!-- <div class="qty-price-area"><b class="bold-text">Subtotal:&nbsp;</b><span id="st" class="subTotal">-</span></div> -->
+                        <a href="#" class="link-small">Show Price Guide</a>
+                    </div>
+                    </div>
+                </div>
+
+                <div class="question-set" id="extras-next-button">
+                    Continue
+                </div>
+
+                </div>`;
+
+    addQuestion(dom, function() {
+        // Callback
+        console.log("We added the next question...")
+        scrollToBottom();
+    })
+
+    //#endregion
+
+});
+
+/**
+ * User clicks Yes or No for Extras Question
+ */
+
+$(document).on("click", ".extras-button", function() {
+    console.log($(this).text());
+    if ($(this).text().includes("Yes")) {
+        $("#extras-input-area").slideDown("fast");
+
+        scrollToBottom();
+
+        // Add some CSS to show that this is selected and the other isn't
+
+        // Also, show or hide the right area in the Order Details
+
+    } else {
+        $("#extras-input-area").slideUp("fast");
+
+        // Add some CSS to show that this is selected and the other isnt'
+
+        // Also, show or hide the right area in the Order Details
+    }
+    
+
+    // Since yes was Selected, let's show the Extras quantity area.
+
+
+
+
+});
+
+/**
+ * User is typing in their new quantity
+ * We catch the keypress to give a live-subtotal
+ */
+
+ $('#extras-qty-input').keyup(function() {
+    //#region
+    var kInput = Number(this.value);
+
+    customQuantity(kInput, "extras");
+    console.log(kInput);
+    // customQuantity(kInput);
+    //#endregion
+});
+
+/** 
+ * User Clicks the View Order Details button
+ */
+
+$("#view-summary").on("click", function() {
+    //#region
+    if ($(this).text().includes("View")) {
+        $(this).text("Hide Order Details");
+    } else if ($(this).text().includes("Hide")) {
+        $(this).text("View Order Details");
+    }
+    $("#summary-area").slideToggle("fast");
+    //#endregion
+});
+
 
 
 
@@ -531,40 +776,24 @@ $(document).on("click", ".auto-fill", function() {
 
 
 /**
- * Convert a number into a price, and update the sub total everywhere
- * @param {String | Number} newPrice The price to update the subtotal (.subTotal) to
- * @param {Bool} turnLocal If true, converts newPrice into a dollar string $X.XX
- */
-
-function updateSubTotal (newPrice, turnLocal) {
-    //#region
-    if (turnLocal) {
-        var st = newPrice.toLocaleString('en-US', {
-            style: 'currency',
-            currency: 'USD',
-          });
-        $(".subTotal").text(st);
-    } else {
-        $(".subTotal").text(newPrice);
-    }
-    //#endregion
-}
-
-
-/**
  * Takes a new Quantity number, figures out the price level in the price grid
  * and updates the properties of our orderDetails proxy and Subtotal values
  *     * This is a hold-over from when I had a drop down with a "custom" option.
  *     * This is now being run any time the user updates the quantity.
  * 
  * @param {Number} kInput The new quantity number
+ * @param {String} type Recycled function for both Mailing Quantity and Extras Quantity
  */
 
-function customQuantity (kInput) {
+function customQuantity (kInput, type) {
     //#region
     // This logic was written largely before I implemented the Proxy object.
     // Could probably be improved upon, but I've got a deadline
 
+    var warningID = "#" + type + "-warning";
+    var inputID = "#" + type + "-qty-input"
+    var nextButtonID = "#" + type + "-next-button"
+    var pppID = "#" + type + "-ppp";
     // Find this.value in pricing
     for (var i = 0; i < pricing.length; i++) {
 
@@ -572,20 +801,20 @@ function customQuantity (kInput) {
             console.log(`${kInput} is greater than or equal to ${pricing[i].qty} and less than or equal to ${pricing[i + 1].qty}`);
 
             // Mutiply kInput by pricing[i].ppp, update subtotal
-            updateSubTotal((kInput * pricing[i].ppp), true)
+            // updateSubTotal((kInput * pricing[i].ppp), true)
             
             // Update the Price per Piece with the new .ppp value
-            $("#ppp").text(intToPrice(pricing[i].ppp)).attr("value", pricing[i].ppp);
+            $(pppID).text(intToPrice(pricing[i].ppp)).attr("value", pricing[i].ppp);
 
             // This is allowed. Hide warning to the user
-            $("#qty-warning").slideUp("fast");
-            $("#custom-price-input").removeClass("input-warn");
+            $(warningID).hide();
+            $(inputID).removeClass("input-warn");
 
             // Enable the Continue button
-            $("#qty-next-button").removeClass("question-set").addClass("question-button");
+            $(nextButtonID).removeClass("question-set").addClass("question-button");
             // If the button's text isn't Continue, change to Update
-            if (!$("#qty-next-button").text().includes("Continue")) {
-                $("#qty-next-button").text("Update");
+            if (!$(nextButtonID).text().includes("Continue")) {
+                $(nextButtonID).text("Update");
             }
 
             //The proxy should update when the user clicks Continue or Save.
@@ -600,19 +829,19 @@ function customQuantity (kInput) {
             console.log(`${kInput} is below minimum...`)
 
             // Mutiply kInput by pricing[0].ppp, update subtotal
-            updateSubTotal((kInput * pricing[0].ppp), true)
-            $("#ppp").text(intToPrice(pricing[0].ppp)).attr("value", pricing[i].ppp);
+            // updateSubTotal((kInput * pricing[0].ppp), true)
+            $(pppID).text(intToPrice(pricing[0].ppp)).attr("value", pricing[i].ppp);
 
             // This is not allowed. Show warning to the user
-            $("#qty-warning").slideDown("fast");
-            $("#custom-price-input").addClass("input-warn");
+            $(warningID).show();
+            $(inputID).addClass("input-warn");
 
             // If the Continue button states "Saved!", simply update the text to "Update"
-            if ($("#qty-next-button").text() == "Saved!") {
-                $("#qty-next-button").text("Update")
+            if ($(nextButtonID).text() == "Saved!") {
+                $(nextButtonID).text("Update")
             } else {
                 // Disable the Continue button
-                $("#qty-next-button").removeClass("question-button").addClass("question-set");
+                $(nextButtonID).removeClass("question-button").addClass("question-set");
 
             }
 
@@ -623,16 +852,16 @@ function customQuantity (kInput) {
         } else if (kInput > pricing[pricing.length - 1].qty) {
             console.log(`${kInput} is above maximum...`)
             // Mutiply kInput by pricing[pricing.length - 1].ppp, update subtotal
-            updateSubTotal((kInput * pricing[pricing.length - 1].ppp), true)
-            $("#ppp").text(intToPrice(pricing[pricing.length - 1].ppp)).attr("value", pricing[i].ppp);
+            // updateSubTotal((kInput * pricing[pricing.length - 1].ppp), true)
+            $(pppID).text(intToPrice(pricing[pricing.length - 1].ppp)).attr("value", pricing[i].ppp);
 
             // This is allowed. Hide warning to the user
-            $("#qty-warning").slideUp("fast");
-            $("#custom-price-input").removeClass("input-warn");
+            $(warningID).hide();
+            $(inputID).removeClass("input-warn");
             // Enable the Continue button
-            $("#qty-next-button").removeClass("question-set").addClass("question-button");
-            if (!$("#qty-next-button").text().includes("Continue")) {
-                $("#qty-next-button").text("Update");
+            $(nextButtonID).removeClass("question-set").addClass("question-button");
+            if (!$(nextButtonID).text().includes("Continue")) {
+                $(nextButtonID).text("Update");
             }
 
             //The proxy should update when the user clicks Continue or Save.
@@ -650,17 +879,6 @@ function customQuantity (kInput) {
     //#endregion
 }
 
-/**
- * Logic for the buttons
- */
-$(document).on("change", ".q", function() {
-    
-    console.log("Changed...")
-});
-
-/**
- * Logic for the buttons
- */
 
 /**
  * Add a Question to the DOm

@@ -3,6 +3,7 @@
 <html>
   <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Direct Mail Order Details Tab</title>
 
     <link rel="stylesheet" href="css/style.css">
@@ -10,6 +11,8 @@
 
     <!-- Datepicker -->
     <link rel="stylesheet" href="js/jquery-datepicker/jquery-ui.min.css">
+
+    <script src="https://kit.fontawesome.com/4372d91db0.js" crossorigin="anonymous"></script>
 
     <style>
     /* CSS */
@@ -63,53 +66,30 @@
                   </select> -->
 
                   <div class="qty-input-warn">
-                    <input type="number" class="input-format" id="custom-price-input" q="1" placeholder="Enter a quantity..."/>
+                    <input type="number" class="input-format" id="qty-qty-input" q="1" placeholder="Enter a quantity..."/>
                     <p class="warn" id="qty-warning">Minimum quantity: <span id="qty-min">500</span></p>
                   </div>
 
 
-                  <div id="qty-price">
-                    <div class="qty-price-area"><b class="bold-text">Price per Piece&nbsp;</b><span id="ppp" >-</span></div>
+                  <div class="qty-price">
+                    <div class="qty-price-area"><b class="bold-text">Price per Piece&nbsp;</b><span id="qty-ppp" >-</span></div>
                     <!-- <div class="qty-price-area"><b class="bold-text">Subtotal:&nbsp;</b><span id="st" class="subTotal">-</span></div> -->
                     <a href="#" class="link-small">Show Price Guide</a>
                   </div>
                 </div>
 
-                
 
-
-
-                <div class="question-set" qb="1" id="qty-next-button">
-                  Continue
-                </div>
-
-
+                  <div class="question-set" qb="1" id="qty-next-button">
+                    Continue
+                  </div>
+  
 
               </div>
 
               <!-- SCRATCH PAD -->
-              <!--
-              <div class="question">
-                <div class="question-text">How many weeks would you like to mail and pay for?</div>
-                  <div class="num-week">
-                    <div class="num-week-choice">
-                      <div class="num-week-week">1 Week</div>
-                      <div class="num-week-cost">$1,725</div>
-                    </div>
-                    <div class="num-week-choice">
-                      <div class="num-week-week">2 Weeks</div>
-                      <div class="num-week-cost">$862.50/wk</div>
-                    </div>
-                    <div class="num-week-choice">
-                      <div class="num-week-week">3 Weeks</div>
-                      <div class="num-week-cost">$575.00/wk</div>
-                    </div>
-                  </div>
-                <div class="question-button" id="week-next-button">
-                Continue
-                </div>
-            </div>
-            -->
+              
+              
+            
 
 
 
@@ -117,7 +97,10 @@
             </div>
             <div id="detail-summary">
               <!-- Order details go here -->
-
+              <div id="view-summary">
+                View Order Details
+              </div>
+              
               <div id="summary-area">
                 <div id="summary-head">
                   <h4 class="heading">Order Details</h4>
@@ -139,9 +122,10 @@
                   </div>
                 </div>
 
-                <div class="summary-area" id="bottom-summary">
+                <!-- SCRATCH PAD -->
+                
 
-                </div>
+                <!-- END SCRATCH PAD -->
 
               </div>
             </div>
@@ -157,6 +141,8 @@
 
   <script src="./js/custom-select.min.js" type="module"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js" integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ==" crossorigin="anonymous"></script>
+  
+  
   <!-- <script src="./js/simplepicker.js" type="module"></script> -->
   <script src="./js/app.js" type="module"></script>
   <script src="./js/price-grid.js" type="module"></script>

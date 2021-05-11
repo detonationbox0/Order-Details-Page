@@ -1,0 +1,3 @@
+#qty-warning
+#qty-qty-input
+#qty-next-button
