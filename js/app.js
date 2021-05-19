@@ -1,3 +1,8 @@
+/**
+ * In a hurry to finish this up, the code got a bit messy.
+ * Sorry!
+ */
+
 
 /**
  * Import Pricing Grid
@@ -6,6 +11,45 @@ import * as priceGrid from "./price-grid.js"
 const pricing = priceGrid.getGrid();
 
 console.log(pricing);
+
+// Create pricing table DOM
+
+/*
+        <div class="price-headers tablerow">Quantity</div>
+        <div class="tier tablerow">500</div>
+        <div class="tier tablerow">1,000</div>
+        <div class="tier tablerow">1,500</div>
+*/
+
+/*
+        <div class="price-headers tablerow">Cost</div>
+        <div class="cost tablerow">$0.32</div>
+        <div class="cost tablerow">$0.79</div>
+        <div class="cost tablerow">$0.69</div>
+*/
+
+var tableQty = "";
+var tableCosts = "";
+for (var i = 0; i < pricing.length; i++) {
+    tableQty = tableQty + `<div class="row-wrapper"><div class="tier tablerow">${pricing[i].qty.toLocaleString()}</div></div>`
+    
+    tableCosts = tableCosts + `<div class="row-wrapper"><div class="tier tablerow">${intToPrice(pricing[i].ppp)}</div></div>`
+}
+
+const myTable = `<div class="toggler">
+    <div class="price-guide">
+        <div class="price-tiers">
+        <div class="row-wrapper price-headers"><div class="tablerow">Quantity</div></div>
+            ${tableQty}
+        </div>
+        <div class="price-costs">
+        <div class="row-wrapper price-headers"><div class="tablerow">Price Per Piece</div></div>
+            ${tableCosts}
+        </div>
+    </div>
+</div>`
+
+// console.log(myTable);
 
 /**
  ___   ___   ___   _     _     
@@ -25,12 +69,15 @@ const orderDetails = {
 
     qty:10000, // Quantity
     ppp:.32, // Price per Piece
-    date:"Week 18, 2021", // In Home Date
+    date:"-", // In Home Date
     weeks:1, // Mailing Weeks
     tmc: 3200, // Total Mailing Cost
     tc:3200, // Total Cost
     wmc:3200, // Weelky Mailing Cost
+    ship:"-", // Extras Quantity
+    shipp:"$65.99",
     eq:10000, // Extras Quantity
+    pm:"Card ending in... 0000",
     eppp:.32, // Extras Price Per Piece
     tpc:.32, // Total Print Cost
     //#endregion
@@ -59,14 +106,14 @@ var orderDetailsHandler = {
 
             // Update the button here.
             $("#qty-next-button").removeClass("question-button").text("Saved!").addClass("question-set");
-
+            checkForCartQuestion();
             // if ($("#qty-next-button").text().includes("Continue")) {
             // };
 
 
 
             console.log(`qty has been updated to ${value}`);
-
+            checkForCartQuestion();
         }
 
 
@@ -103,7 +150,7 @@ var orderDetailsHandler = {
 
             // Update the button here.
             $("#week-next-button").removeClass("question-button").text("Saved!").addClass("question-set");
-
+            checkForCartQuestion();
             console.log(`date has been updated to ${value}`);
 
         }
@@ -142,8 +189,8 @@ var orderDetailsHandler = {
             console.log(`weeks has been updated to ${value}`);
 
             // Any time the week is changed, re-enable the button
-            $("#week-next-button").removeClass("question-button").text("Saved!").addClass("question-set");
-
+            $("#numweek-next-button").removeClass("question-button").text("Saved!").addClass("question-set");
+            checkForCartQuestion();
         }
 
         /** ===---------------------------------------------------------------===
@@ -180,6 +227,98 @@ var orderDetailsHandler = {
 
         }
 
+                /** ===---------------------------------------------------------------===
+         * Date has been updated ↓
+         */
+
+        if (property === 'ship') {
+        // Value must be a string.
+        if (typeof value !== 'string') {
+            throw new Error('Ship To must be a string.');
+        }
+        // This item was added to DOM when the user clicked the next button on q1.
+        // Update the DOM with locale string version of `value`
+        if (value != "-") {
+            $("#ship-value").text(value);
+
+            // Update the button here.
+            $("#ship-next-button").removeClass("question-button").text("Saved!").addClass("question-set");
+            checkForCartQuestion();
+            console.log(`Ship to has been updated to ${value}`);
+        }
+
+
+    }
+    /** ===---------------------------------------------------------------===
+             * Extras Price per Piece has been updated ↓
+             */
+    if (property === 'shipp') {
+        // Value must be a number.
+        if (typeof value !== 'number') {
+            throw new Error('Quantity must be a number.');
+        }
+        // This item is in DOM from the start.
+        // Update the DOM with locale string version of `value`
+        $("#shipp-value").text(intToPrice(value));
+
+        // Update the button here.
+        // $("#extras-next-button").removeClass("question-button").text("Saved!").addClass("question-set");
+
+        // if ($("#qty-next-button").text().includes("Continue")) {
+        // };
+
+
+
+        console.log(`shipping has been updated to ${value}`);
+
+    }
+        /** ===---------------------------------------------------------------===
+         * Extras Price per Piece has been updated ↓
+         */
+        if (property === 'eppp') {
+            // Value must be a number.
+            if (typeof value !== 'number') {
+                throw new Error('Quantity must be a number.');
+            }
+            // This item is in DOM from the start.
+            // Update the DOM with locale string version of `value`
+            $("#eppp-value").text(intToPrice(value));
+
+            // Update the button here.
+            // $("#extras-next-button").removeClass("question-button").text("Saved!").addClass("question-set");
+
+            // if ($("#qty-next-button").text().includes("Continue")) {
+            // };
+
+
+
+            console.log(`qty has been updated to ${value}`);
+
+        }
+
+        /** ===---------------------------------------------------------------===
+         * Total Print Cost has been updated ↓
+         */
+         if (property === 'tpc') {
+            // Value must be a number.
+            if (typeof value !== 'number') {
+                throw new Error('Total print cost must be a number.');
+            }
+            // This item is in DOM from the start.
+            // Update the DOM with locale string version of `value`
+            $(".tpc-value").text(intToPrice(value));
+
+            // Update the button here.
+            // $("#extras-next-button").removeClass("question-button").text("Saved!").addClass("question-set");
+
+            // if ($("#qty-next-button").text().includes("Continue")) {
+            // };
+
+
+
+            console.log(`tpc has been updated to ${value}`);
+
+        }
 
         /** ===---------------------------------------------------------------===
          * Extras Quantity has been updated ↓
@@ -195,13 +334,31 @@ var orderDetailsHandler = {
 
             // Update the button here.
             $("#extras-next-button").removeClass("question-button").text("Saved!").addClass("question-set");
-
+            checkForCartQuestion();
             // if ($("#qty-next-button").text().includes("Continue")) {
             // };
 
 
 
             console.log(`qty has been updated to ${value}`);
+
+        }
+
+        /** ===---------------------------------------------------------------===
+         * Payment Method has been updated ↓
+         */
+         if (property === 'pm') {
+            // Value must be a string.
+            if (typeof value !== 'string') {
+                throw new Error('Payment method must be a string.');
+            }
+            // This item was added to DOM when the user clicked the next button on q1.
+            // Update the DOM with locale string version of `value`
+            $("#pm-value").text(value);
+
+            
+            console.log(`pm has been updated to ${value}`);
+            $("#pay-next-button").removeClass("question-button").text("Saved!").addClass("question-set");
 
         }
 
@@ -230,7 +387,21 @@ var orderProxy = new Proxy(orderDetails, orderDetailsHandler);
 $(function() {
     //#region
     console.log( "ready!" );
+
+    // Add table to first question
+    console.log(myTable)
+    $("#quantity-question").append(myTable);
+
+    // Debug
+    // $(".show-table").click();
+
     scrollToBottom();
+
+    // showMessage(`
+    // <h3>Your order has been added to the Shopping Cart</h2>
+    // <p>Would you like to view the Shopping Cart now?</p>
+    // `)
+
     //Init
     
     /**
@@ -385,7 +556,7 @@ $("#qty-next-button").on("click", function() {
             <div id="wk-select-area">` +
                 //<input class="date-picker" id="wk-select" type="week" min="2021-W18"/>
                 `
-                <input type="text" id="datepicker" class="input-format">
+                <input type="text" id="datepicker" class="input-format" autocomplete="off">
             </div>
                 <div class="question-set" id="week-next-button">
                 Continue
@@ -443,13 +614,103 @@ $("#qty-next-button").on("click", function() {
  */
  $(document).on("click", "#extras-next-button", function() {
     //#region
-    var chosenQty = $("#extras-qty-input").val();
-    var chosenPPP = $("#extras-ppp").attr("value");
 
-    // Update Proxys with values
-    orderProxy.eq = Number(chosenQty);
-    orderProxy.eppp = Number(chosenPPP);
-    orderProxy.tpc = Number(chosenQty) * Number(chosenPPP);
+    // If the #extras-ppp exists, they wanted extras. The next question is Where should we ship them to?
+
+    if ($("#extras-ppp").length) {
+        var chosenQty = $("#extras-qty-input").val();
+        var chosenPPP = $("#extras-ppp").attr("value");
+    
+
+        orderProxy.eq = Number(chosenQty);
+        orderProxy.eppp = Number(chosenPPP);
+        orderProxy.tpc = Number(chosenQty) * Number(chosenPPP);
+
+        // Add the ship to question
+        // ONLY if it's not there yet
+        if (!$("#ship-sel").length) {
+            console.log("Add the shipping question after #extras question");
+
+            var dom = `
+                <div class="question" id="ship-question">
+                <div class="question-text">Where should we ship your prints?</div>
+                <select id="ship-sel">
+                <option value="-" default>Select...</option>
+                <option value="-" >MARCO’S PIZZA - TIFFIN 1029 85 Melmore St, , OH 44883</option>
+                </select>
+                <div class="question-set" id="ship-next-button">
+                                Continue
+                </div>
+            </div>
+            `;
+
+            $("#extras-question").after(dom);
+            $("#ship-question").slideDown("fast", function() {
+                // checkForCartQuestion();
+
+            });
+
+            // Forcing this...
+            $("#add-to-cart-question").slideUp();
+            scrollToBottom();
+            // addQuestion(dom,function() {
+            //     // Question added..
+            //     scrollToBottom();
+            // })
+            $(this).removeClass("question-button").text("Saved!").addClass("question-set");
+
+        }
+
+
+    } else {
+        // Skip the "Where should we ship them to?" question...
+
+        // Renmove the shipping question
+        $("#ship-question").remove();
+
+        orderProxy.eq = 0;
+        orderProxy.eppp = 0;
+        orderProxy.tpc = 0;
+
+        console.log("Skipping the shipping question");
+        if (!$("#addcc-button").length) {
+            // Create element to append to DOM
+            var dom = `<div class="question unhide-question">
+                <div class="question-text">How would you like to pay for this order?</div>
+                <div class="payment-buttons">
+                <div class="payment-button" id="ach-button">
+                    <i class="fas fa-university"></i><p class="pay-method">ACH Ending in... 1234</p>
+                </div>
+                <div class="payment-button" id="cc-button">
+                    <i class="fas fa-money-check-alt"></i><p class="pay-method">Card Ending in... 1234</p>
+                </div>
+                <div class="payment-button" id="addcc-button">
+                <i class="fas fa-plus"></i></i><p>Add Card</p>
+                </div>
+                </div>
+                <div class="question-set" id="pay-next-button">
+                                        Continue
+                </div>
+            </div>`
+            
+            addQuestion(dom, function() {
+                // Question was added...
+                scrollToBottom();
+
+            }) 
+        }
+
+        $(this).removeClass("question-button").text("Saved!").addClass("question-set");
+        // checkForCartQuestion();
+
+
+    }
+
+
+    // Append the next question...
+
+
+    //#endregion
  });
 /** 
  * User chooses a date
@@ -463,7 +724,7 @@ $(document).on("change", "#datepicker", function() {
         $("#tmc").before(`
             <div class="summary-item" id="date">
                 <div class="summary-item-text summary-item-title" id="date-title">First In-Home Week:</div>
-                <div class="summary-item-text summary-item-value" id="date-value">Week 18, 2021</div>
+                <div class="summary-item-text summary-item-value" id="date-value">-</div>
             </div>
         `)
     }
@@ -473,12 +734,9 @@ $(document).on("change", "#datepicker", function() {
     console.log(newDate);
 
     // Enable the button
-    $("#week-next-button").removeClass("question-set").addClass("question-button");
-    //orderProxy.date = newDate;
 
-    if (!$("#week-next-button").text().includes("Continue")) {
-        $("#week-next-button").text("Update");
-    }
+    requireUpdate("#week-next-button");
+    
 
     /*
     // We need a pretty string, ex: May 1st, 2021.
@@ -532,7 +790,7 @@ $(document).on("change", "#datepicker", function() {
             var weeks = weeks + `
             <div class="num-week-choice" weeks="${i}" cost="${ppw}">
                 <div class="num-week-week">${i} Week${i == 1 ? "" : "s"}</div>
-                <div class="num-week-cost">${prettyPpw}${i == 1 ? " Up Front" : " / Week"}</div>
+                <div class="num-week-cost">${prettyPpw}${i == 1 ? " One Time Payment" : " / Week"}</div>
             </div>
             `
         }
@@ -621,10 +879,11 @@ $(document).on("click", ".num-week-choice", function() {
 
 
         <div class="summary-area" id="bottom-summary">
-        <div class="summary-item" id="wmc">
+        <div class="summary-item summary-item-bottom" id="wmc">
         <div class="summary-item-text summary-item-title bold" id="wmc-title">Weekly Mailing Cost:</div>
         <div class="summary-item-text summary-item-value bold" id="wmc-value">-</div>
         </div>
+        <div class="disc">*To be billed each week of mailing.</div>
         </div>`
 
         $("#mail-summary").after(dom);
@@ -640,12 +899,8 @@ $(document).on("click", ".num-week-choice", function() {
     $(this).addClass("num-week-selected");
 
 
-
-    if (!$("#numweek-next-button").text().includes("Continue")) {
-        $("#numweek-next-button").text("Update");
-    }
-
-    $("#numweek-next-button").removeClass("question-set").addClass("question-button");
+    requireUpdate("#numweek-next-button")
+    
     //#endregion
     // alert(`Weeks: ${weeks} Cost: ${cost}`);
 });
@@ -661,46 +916,37 @@ $(document).on("click", "#numweek-next-button", function() {
     orderProxy.tc = orderDetails.tmc;
     orderProxy.wmc = orderDetails.tmc / Number(weeks);
 
-    // Add the next question, if it's not already there.
+    // Add the next question, **if it's not already there.**
 
-    var dom = `<div class="question">
-                <div class="question-text">Would you like extras?</div>
-                
-                <div class="extras-buttons">
-                    <div class="question-button extras-button" id="extras-yes-button">
-                        Yes
-                    </div>
-                    <div class="question-button extras-button" id="extras-no-button">
-                        No
-                    </div>
-                </div>
+    if (!$(".extras-buttons").length) { // Arbitrary piece of appended dom below
+        var dom = `<div class="question" id="extras-question">
+        <div class="question-text">Would you like extra copies shipped to a store?</div>
+        
+        <div class="extras-buttons">
+            <div class="question-button extras-button" id="extras-yes-button">
+                Yes
+            </div>
+            <div class="question-button extras-button" id="extras-no-button">
+                No
+            </div>
+        </div>
 
-                <div id="extras-input-area">
-                    <div class="question-text">How many extra pieces would you like?</div>
-                    <div class="qty-select-area">
-                    <div class="qty-input-warn">
-                        <input type="number" class="input-format" id="extras-qty-input" placeholder="Enter a quantity..."/>
-                        <p class="warn" id="extras-warning">Minimum quantity: <span id="qty-min">500</span></p>
-                    </div>
-                    <div class="qty-price">
-                        <div class="qty-price-area"><b class="bold-text">Price per Piece&nbsp;</b><span id="extras-ppp" >-</span></div>
-                        <!-- <div class="qty-price-area"><b class="bold-text">Subtotal:&nbsp;</b><span id="st" class="subTotal">-</span></div> -->
-                        <a href="#" class="link-small">Show Price Guide</a>
-                    </div>
-                    </div>
-                </div>
+        
 
-                <div class="question-set" id="extras-next-button">
-                    Continue
-                </div>
+        <div class="question-set" id="extras-next-button">
+            Continue
+        </div>
+        ${myTable}
+        </div>`;
 
-                </div>`;
+        addQuestion(dom, function() {
+            // Callback
+            console.log("We added the next question...")
+            scrollToBottom();
+        })
+    }
 
-    addQuestion(dom, function() {
-        // Callback
-        console.log("We added the next question...")
-        scrollToBottom();
-    })
+    
 
     //#endregion
 
@@ -711,22 +957,136 @@ $(document).on("click", "#numweek-next-button", function() {
  */
 
 $(document).on("click", ".extras-button", function() {
+    //#region
+
     console.log($(this).text());
+    // Show the continue button either way
+    $("#extras-next-button").fadeIn("fast");
     if ($(this).text().includes("Yes")) {
+
+        // The user said Yes
+
+        // If this isn't already selected!
+        if (!$("#ship").length) {
+            // Also, show or hide the right area in the Order Details
+            // Add the Extras area to the Order Details if it's not there already
+
+
+
+
+            var dom = `
+            <div class="summary-area" id="summary-extras">
+                    <div class="summary-area-head">Extra Copies</div>
+                    <div class="summary-item" id="ship">
+                        <div class="summary-item-text summary-item-title" id="ship-title">Ship to:</div>
+                        <div class="summary-item-text summary-item-value" id="ship-value">-</div>
+                    </div>
+                    <div class="summary-item" id="eppp">
+                        <div class="summary-item-text summary-item-title" id="eppp-title">Price per Piece:</div>
+                        <div class="summary-item-text summary-item-value" id="eppp-value">-</div>
+                    </div>
+                    <div class="summary-item" id="eq">
+                        <div class="summary-item-text summary-item-title" id="eq-title">Copy Quantity:</div>
+                        <div class="summary-item-text summary-item-value" id="eq-value">-</div>
+                    </div>
+                    <div class="summary-item" id="ship">
+                        <div class="summary-item-text summary-item-title" id="shipp-title">Shipping:</div>
+                        <div class="summary-item-text summary-item-value" id="shipp-value">-</div>
+                    </div>
+                    <div class="summary-item" id="tpc">
+                        <div class="summary-item-text summary-item-title bold" id="tpc-title">Total Print Cost:</div>
+                        <div class="summary-item-text summary-item-value bold tpc-value" id="tpc-value">-</div>
+                    </div>
+                    </div>
+            `
+            // Also, add the Print Cost to the #bottom-summary!
+            // If these doms are not already added...
+
+            if (!$("#dn-title").length) {
+                $("#bottom-summary").append(`
+                <div class="summary-item summary-item-bottom" id="tpc">
+                    <div class="summary-item-text summary-item-title bold" id="tpc-title">Print Cost:</div>
+                    <div class="summary-item-text summary-item-value bold tpc-value" id="tpc-value">-</div>
+                </div>
+
+                `)
+                $("#bottom-summary").after(`
+                <div class="summary-item summary-item-bottom" id="dn">
+                    <div class="summary-item-text summary-item-title bold" id="dn-title">Due Now:</div>
+                    <div class="summary-item-text summary-item-value bold tpc-value" id="dn-value">-</div>
+                </div>
+                `);
+
+
+            }
+
+            $("#summary-total").before(dom);
+        }
+
+        // Add the extras-input-area before sliding down
+        var eia = `<div id="extras-input-area">
+        <div class="question-text">How many extra pieces would you like?</div>
+            <div class="qty-select-area">
+                <div class="qty-input-warn">
+                    <input type="number" class="input-format" id="extras-qty-input" placeholder="Enter a quantity..."/>
+                    <p class="warn" id="extras-warning">Minimum quantity: <span id="qty-min">500</span></p>
+                </div>
+                <div class="qty-price">
+                    <div class="qty-price-area"><b class="bold-text">Price per Piece&nbsp;</b><span id="extras-ppp" >-</span></div>
+                    <!-- <div class="qty-price-area"><b class="bold-text">Subtotal:&nbsp;</b><span id="st" class="subTotal">-</span></div> -->
+                    <a href="#" class="link-small show-table" value="extras">Show Price Guide</a>
+                </div>
+            </div>
+        </div>`
+
+        $("#extras-next-button").before(eia);
+
         $("#extras-input-area").slideDown("fast");
 
+        checkForCartQuestion()
         scrollToBottom();
 
         // Add some CSS to show that this is selected and the other isn't
+        $("#extras-no-button").addClass("disabled-button");
+        $("#extras-yes-button").removeClass("disabled-button");
 
-        // Also, show or hide the right area in the Order Details
+
 
     } else {
-        $("#extras-input-area").slideUp("fast");
+
+
+
+        //User said no
+        $("#extras-input-area").slideUp("fast", function() {
+            $("#extras-input-area").remove();
+        });
+
+        // Remove the shipping question
+
+        
 
         // Add some CSS to show that this is selected and the other isnt'
+        $("#extras-yes-button").addClass("disabled-button");
+        $("#extras-no-button").removeClass("disabled-button");
 
+        // Hide the area in Order Details
+        $("#summary-extras").remove();
+
+        // Also hide the Due Now and Print Cost areas
+
+        $("#dn").remove();
+        $("#tpc").remove();
+
+        // Enable the Continue button
+
+        requireUpdate("#extras-next-button")
+        
         // Also, show or hide the right area in the Order Details
+
+        // Hide the ship to question
+        $("#ship-question").remove();
+
+        scrollToBottom();
     }
     
 
@@ -734,20 +1094,23 @@ $(document).on("click", ".extras-button", function() {
 
 
 
-
+    //#endregion
 });
+
 
 /**
  * User is typing in their new quantity
  * We catch the keypress to give a live-subtotal
  */
 
- $('#extras-qty-input').keyup(function() {
+ $(document).on("keyup",'#extras-qty-input', function() {
     //#region
+    console.log("Keyed up")
     var kInput = Number(this.value);
-
+    
     customQuantity(kInput, "extras");
-    console.log(kInput);
+
+    // orderProxy.eq = kInput;
     // customQuantity(kInput);
     //#endregion
 });
@@ -767,8 +1130,164 @@ $("#view-summary").on("click", function() {
     //#endregion
 });
 
+/**
+ * User chooses a store to ship to
+ */
+
+$(document).on('change', "#ship-sel", function() {
+    
+    requireUpdate("#ship-next-button");
+    
+})
+
+/**
+ * User clicks Yes or No for Extras Question
+ */
+
+ $(document).on("click", "#ship-next-button", function() {
+     //#region
+     var selText = $( "#ship-sel option:selected" ).text();
+
+     // If the option isn't the default "Select..."
+     if (selText.includes("Select")) {
+        orderProxy.ship = "-"
+     } else {
+        orderProxy.ship = selText;
+        orderProxy.shipp = 66.99;
+     }
+
+    // Add the Account total
+    if (!$("#account").length) {
+        $("#bottom-summary").prepend(`
+        <div class="summary-item summary-item-bottom" id="account">
+            <div class="summary-item-text summary-item-title bold" id="pm-title">Account:</div>
+            <div class="summary-item-text summary-item-value bold tpc-value" id="pm-value">-</div>
+        </div>
+        `)
+    }
+
+     console.log("Adding the payment question...")
+     // Add payment question
+     // If it's not there yet...
+     if (!$("#addcc-button").length) {
+         var dom = `<div class="question unhide-question">
+         <div class="question-text">How would you like to pay for this order?</div>
+         <div class="payment-buttons">
+           <div class="payment-button" id="ach-button">
+             <i class="fas fa-university"></i><p class="pay-method">ACH Ending in... 1234</p>
+           </div>
+           <div class="payment-button" id="cc-button">
+             <i class="fas fa-money-check-alt"></i><p class="pay-method">Card Ending in... 1234</p>
+           </div>
+           <div class="payment-button" id="addcc-button">
+           <i class="fas fa-plus"></i></i><p>Add Card</p>
+           </div>
+         </div>
+         <div class="question-set" id="pay-next-button">
+                                Continue
+        </div>
+       </div>`
+       
+       addQuestion(dom, function() {
+           // Question was added...
+           scrollToBottom();
+       })
+     }
+
+    //#endregion
+
+ });
+
+/**
+ * User clicks a payment option
+ */
+
+ $(document).on("click", ".payment-button", function() {
+    //#region
+    var btnID = $(this).attr("id");
 
 
+    if (btnID != "addcc-button") {
+        // They chose an existing payment
+
+        // Update the next button to say Update if it currently says Saved
+        requireUpdate("#pay-next-button");
+       
+        // Add a class to show this button is selected - remove it from whatever else it's on
+        $(".pay-selected").removeClass("pay-selected");
+        $(this).addClass("pay-selected")
+    }
+
+    //#endregion
+ });
+
+/**
+ * User clicks a continue with payment
+ */
+
+ $(document).on("click", "#pay-next-button", function() {
+    //#region
+    var payMethod = $(".pay-selected").text().trim();
+
+    orderProxy.pm = payMethod;    
+
+    // Last question add...
+    console.log("Adding the question...")
+    checkForCartQuestion();
+
+
+    // console.log(payMethod);
+    //#endregion
+ });
+
+
+ /** 
+  * The user clicks add to cart
+  */
+
+$(document).on("click", ".add-to-cart-button", function() {
+    //#region
+    var thisVal = $(this).attr("value");
+    if (thisVal == "add") {
+        showMessage(`
+            <h3>Your order has been added to the Shopping Cart</h2>
+            <p>Would you like to view the Shopping Cart now?</p>
+        `)
+    } else if (thisVal == "save") {
+        showMessage(`
+            <h3>Your order has been Saved for Later</h2>
+            <p>Would you like to return to the Place an Order page?</p>
+        `)
+    }
+
+    //#endregion
+});
+
+
+ /** 
+  * Fade out the message if the user clicks a button
+  */
+
+$(".message-button").on("click", function() {
+    //#region
+    console.log("Clicked")
+    $("#message-container").fadeOut("fast");
+    //#endregion
+});
+
+//Show Hide Pricing Guide
+
+$(document).on("click", ".show-table", function() {
+    var whichOne = $(this).attr("value");
+    var questionID = whichOne + "-question"
+    $("#" + questionID).find(".toggler").slideToggle("fast");
+    console.log($(this).text())
+    if ($(this).text().includes("Show")) {
+        $(this).text("Hide Price Guide");
+    } else {
+        $(this).text("Show Price Guide");
+    }
+});
 
 /** ===--------------------------------------------------------------------------------------------===
  * CUSTOM FUNCTIONS ↓
@@ -811,11 +1330,8 @@ function customQuantity (kInput, type) {
             $(inputID).removeClass("input-warn");
 
             // Enable the Continue button
-            $(nextButtonID).removeClass("question-set").addClass("question-button");
-            // If the button's text isn't Continue, change to Update
-            if (!$(nextButtonID).text().includes("Continue")) {
-                $(nextButtonID).text("Update");
-            }
+            requireUpdate(nextButtonID)
+            
 
             //The proxy should update when the user clicks Continue or Save.
             /*
@@ -859,10 +1375,8 @@ function customQuantity (kInput, type) {
             $(warningID).hide();
             $(inputID).removeClass("input-warn");
             // Enable the Continue button
-            $(nextButtonID).removeClass("question-set").addClass("question-button");
-            if (!$(nextButtonID).text().includes("Continue")) {
-                $(nextButtonID).text("Update");
-            }
+            requireUpdate(nextButtonID)
+            
 
             //The proxy should update when the user clicks Continue or Save.
             /*
@@ -919,4 +1433,85 @@ function intToPrice(int) {
     
 }
 
+/**
+ * Change the text of the next button to "Update"
+ * Then swap classes to make it clickable
+ * @param {String} refid The ID of the 'next-button' we are updating
+ */
+function requireUpdate(refid) {
+    // Change the text of the tag with the id refid
+    // to Update and fix it's class
+    if (!$(refid).text().includes("Continue")) {
+        $(refid).text("Update");
+    }
+    $(refid).removeClass("question-set").addClass("question-button");
+    
+    // If the Add to Cart area is there, hide it!
+    if ($("#add-next-button").length) {
+        $("#add-to-cart-question").slideUp("fast", function() {
+            $(this).remove();
+            
+        })
 
+        $(".add-to-cart-button").slideUp("fast", function() {
+            $(this).remove();
+        })
+
+    }
+
+}
+
+/**
+ * Add the Add To Cart Question when something has been updated
+ * Only if the Credit Cart question is present
+ */
+
+function checkForCartQuestion() {
+    // Is the payment info question there?
+    if ($("#pay-next-button").length) {
+        // Is the add to cart question there?
+        if (!$("#add-next-button").length) {
+            // We should add that question.
+            var dom = `<div class="question unhide-question" id="add-to-cart-question">
+            <div class="confirm-text">
+                <i class="fas fa-check-circle"></i>
+                <div class="question-text">You are all set!</div>
+            </div>
+            <div class="add-to-cart-buttons">
+                <div class="question-button add-to-cart-button" qb="1" id="add-next-button" value="add">
+                    Add to Cart
+                </div>   
+                <div class="question-button add-to-cart-button" qb="1" id="save-next-button" value="save">
+                    Save for Later
+                </div>
+            </div>
+            </div>`
+        
+            addQuestion(dom, function() {
+                // Question added...
+                console.log("Question added...");
+                scrollToBottom();
+            });
+
+            if (!$(".summary-add-button").length) {
+                $("#summary-area").append(`
+                <div class="add-to-cart-buttons">
+                    <div class="question-button add-to-cart-button add-to-cart-button summary-add-button" value="add" >Add to cart</div>
+                    <div class="question-button add-to-cart-button add-to-cart-button summary-add-button" value="save">Save for Later</div>
+                </div>
+                `);
+            }
+            // Append the Cart and Save buttons to the order details summary
+            
+            
+            
+
+        }
+    }
+}
+
+function showMessage(theMessage) {
+    $("#message").empty().append(theMessage);
+    $("#message-container").css("display", "flex");
+
+}

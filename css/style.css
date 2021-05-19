@@ -272,6 +272,7 @@ html, body {
 
 .summary-item {
     margin-top:10px;
+    /* margin-bottom:10px; */
     display:flex;
 }
 
@@ -400,13 +401,14 @@ html, body {
     margin:20px auto;
     border: 1px solid #D1DAE9;
     border-radius:10px;
-
+    padding-bottom:10px;
     /* padding:10px; */
 }
 
 #wmc {
     
     padding:10px;
+    padding-bottom:0px;
     padding-top:0px;
 }
 
@@ -437,26 +439,261 @@ html, body {
      margin-top:20px;
 }
 
+#summary-extras {
+    margin-top:20px;
+    /* padding-top:20px; */
+    border-top-width:1px;
+    border-top-style:solid;
+    border-top-color: #D1DAE9;
+}
+
+#ship-value {
+    max-width:180px;
+    text-align:right;
+}
+
+.disabled-button {
+    background-color:rgba(53, 75, 132, 0.1);
+    color:#354B85;
+    
+}
+
+#extras-next-button {
+    display:none;
+}
+
+#ship-sel {
+    height:25px;
+    margin-top:20px;
+}
+
+.payment-buttons {
+    display:flex;
+    flex-direction:row;
+}
+
+.payment-button {
+    width:150px;
+    height:60px;
+    margin-right:20px;
+    margin-top:20px;
+    display:flex;
+    align-items: center;
+    justify-content: center;
+    border:1px solid #3b4b85;
+    border-radius:5px;
+    flex-direction: column;
+    transition:0.3s;
+}
+
+.payment-button:hover {
+    color:white;
+    background-color:#354B85;
+    cursor:pointer;
+
+}
+.payment-button i {
+    margin-bottom:5px;
+}
+.payment-button p {
+    margin:0px;
+    font-size:9pt;
+}
+
+#ach-button {
+    /* background-color:lightsalmon; */
+}
+
+#cc-button {
+    /* background-color:lightgreen; */
+}
+
+#addcc-button {
+    color:mediumseagreen;
+    border-color:mediumseagreen;
+    /* border:none; */
+}
+
+#addcc-button:hover {
+    background-color:transparent !important;
+    filter:brightness(110%);
+}
+
+.disc {
+    font-size:7pt;
+    margin:0px 5px 10px 10px;
+
+}
+
+.summary-item-bottom {
+    padding:0px 10px;
+}
+
+#dn {
+    margin-bottom:20px;
+}
+
+.pay-selected {
+    color:white !important;
+    background-color:#2B3E6F !important;
+}
+
+.confirm-text {
+    display:flex;
+    align-items: center;
+}
+
+.confirm-text i {
+    color:mediumseagreen;
+    margin-right:8px;
+}
+
+.add-to-cart-buttons {
+    display:flex;
+}
+
+.add-to-cart-buttons div {
+    margin-right:8px;
+}
+
+
+#message-container {
+    position:absolute;
+    top:0px;
+    left:0px;
+    right:0px;
+    bottom:0px;
+    background-color:rgba(0,0,0,.5);
+    display:none;
+    align-items:center;
+    justify-content: center;
+}
+
+#message-body {
+    background-color:white;
+    padding:30px;
+}
+
+#message-buttons {
+    display:flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.message-button {
+    border:none;
+    padding:5px 20px;
+    color:white;
+    background-color:#f78d1e;
+    margin:10px 10px;
+    min-width:100px;
+
+}
+
+.message-button:hover {
+    cursor:pointer;
+    filter:brightness(110%);
+}
+
+#message {
+    text-align:center;
+}
+
+#dn-title, #dn-value {
+    font-size:12pt;
+}
+
+.summary-add-button {
+    width:100%;
+    margin-top:10px;
+}
+
+/* Price table */
+
+.toggler {
+    display:none;
+}
+
+.price-guide {
+    /* background-color:lightblue; */
+    /* /* display:flex; */
+    max-width:300px;
+    display:flex;
+    margin-top:20px;
+
+    font-size:10pt;
+}
+
+.price-tiers, .price-costs {
+    /* background-color:lightgreen; */
+    display:flex;
+    flex-direction: column;
+    width:100%;
+    /* width:100%;
+    font-size:11pt; */
+}
+
+.row-wrapper {
+    padding:5px;
+}
+
+.price-tiers > .row-wrapper {
+    padding-right:20px;
+
+}
+
+.price-costs > .row-wrapper {
+    padding-left:20px;
+
+}
+
+.price-tiers, .price-costs {
+    text-align:center;
+    /* padding-right:50px; */
+}
+
+/* .price-tiers {
+    display:flex;
+    flex-direction: column;
+    align-items: flex-end;
+} */
+
+.row-wrapper:nth-child(even) {background: rgba(0,0,0, 0.03)}
+.price-headers {
+    justify-content: center;
+}
+
+.price-headers {
+    font-weight:lighter;
+    color:#354b85ad;
+    border-bottom-width:1px;
+    border-bottom-style:solid;
+    border-bottom-color:rgba(0,0,0,.1);
+    border-top-width:1px;
+    border-top-style:solid;
+    border-top-color:rgba(0,0,0,.1);
+    font-size:10pt;
+    /* height: 29px; */
+    display: flex;
+    align-items: center;
+}
+
+.summary-add-button {
+    margin-right:unset;
+    margin:0px 5px;
+}
+/* No longer worried about mobile - that will be for another day */
 
 
 /*
- ___   ____  __   ___   _      __   _   _      ____ 
-| |_) | |_  ( (` / / \ | |\ | ( (` | | \ \  / | |_  
-|_| \ |_|__ _)_) \_\_/ |_| \| _)_) |_|  \_\/  |_|__ 
-*/
 @media only screen and (min-width: 1080px) {
     #summary-area {
-        /*jQuery Slide makes an inline style */
         display:block !important;
     }
 }
 @media only screen and (max-width: 1080px) {
     
-    /*
-        Hides Order Details,
-        Shows Expander
-    */
-    /*#expand-summary {
+    #expand-summary {
         display:block;
     }
 
@@ -473,13 +710,7 @@ html, body {
     #detail-summary:hover {
         cursor:pointer;
         background-color:rgba(0,0,0,.04)
-    }*/
-
-    /*
-        Move Details to Bottom
-        Hide the details
-        Replace with a Show Expander
-    */
+    }
 
     #summary-area {
         display:none;
@@ -490,7 +721,6 @@ html, body {
         flex-wrap:nowrap;
         flex:1;
         overflow-y: auto;
-        /* overflow-y:auto; */
     }
 
     #content-body {
@@ -503,7 +733,6 @@ html, body {
     }
 
     #detail-questions {
-        /* overflow-y:unset; */
         flex-grow:1;
         max-height:unset;
     }
@@ -520,4 +749,4 @@ html, body {
         display:flex;
     }
     
-  }
+  }*/

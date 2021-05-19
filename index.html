@@ -21,6 +21,17 @@
   </head>
   <body>
     <!-- HTML -->
+    <div id="message-container">
+      <div id="message-body">
+        <div id="message">
+          
+        </div>
+        <div id="message-buttons">
+          <button class="message-button" >Yes</button>
+          <button class="message-button" >No</button>
+        </div>
+      </div>
+    </div>
 
     <div id="container">
       <div id="navbar"></div>
@@ -56,7 +67,7 @@
               </div>
 
 
-              <div class="question unhide-question">
+              <div class="question unhide-question" id="quantity-question">
                 <div class="question-text">How many pieces would you like to mail?</div>
                 <div class="qty-select-area">
                   
@@ -74,7 +85,7 @@
                   <div class="qty-price">
                     <div class="qty-price-area"><b class="bold-text">Price per Piece&nbsp;</b><span id="qty-ppp" >-</span></div>
                     <!-- <div class="qty-price-area"><b class="bold-text">Subtotal:&nbsp;</b><span id="st" class="subTotal">-</span></div> -->
-                    <a href="#" class="link-small">Show Price Guide</a>
+                    <a href="#" class="link-small show-table" value="quantity">Show Price Guide</a>
                   </div>
                 </div>
 
@@ -82,7 +93,22 @@
                   <div class="question-set" qb="1" id="qty-next-button">
                     Continue
                   </div>
-  
+                  <!--
+                  <div class="price-guide">
+                    <div class="price-tiers">
+                      <div class="price-headers tablerow">Quantity</div>
+                      <div class="tier tablerow">500</div>
+                      <div class="tier tablerow">1,000</div>
+                      <div class="tier tablerow">1,500</div>
+                    </div>
+                    <div class="price-costs">
+                      <div class="price-headers tablerow">Cost</div>
+                      <div class="cost tablerow">$0.32</div>
+                      <div class="cost tablerow">$0.79</div>
+                      <div class="cost tablerow">$0.69</div>
+                    </div>
+                  </div>
+                  -->
 
               </div>
 
@@ -90,7 +116,20 @@
               
               
             
-
+              <!-- <div class="question unhide-question">
+                <div class="confirm-text">
+                  <i class="fas fa-check-circle"></i>
+                  <div class="question-text">You are all set!</div>
+                </div>
+                <div class="add-to-cart-buttons">
+                  <div class="question-button" qb="1" id="qty-next-button">
+                    Add to Cart
+                  </div>   
+                  <div class="question-button" qb="1" id="qty-next-button">
+                    Save for Later
+                  </div>
+                </div>
+              </div> -->
 
 
 
@@ -123,8 +162,28 @@
                 </div>
 
                 <!-- SCRATCH PAD -->
+                <!--
                 
+                -->
 
+
+                <!-- Already there: -->
+                <!--
+                <div class="summary-area" id="summary-total">
+                  <div class="summary-item" id="tc">
+                  <div class="summary-item-text summary-item-title" id="tc-title">Total Cost:</div>
+                  <div class="summary-item-text summary-item-value" id="tc-value">-</div>
+                  </div>
+                  </div>
+          
+          
+                  <div class="summary-area" id="bottom-summary">
+                  <div class="summary-item" id="wmc">
+                  <div class="summary-item-text summary-item-title bold" id="wmc-title">Weekly Mailing Cost:</div>
+                  <div class="summary-item-text summary-item-value bold" id="wmc-value">-</div>
+                  </div>
+                </div>
+                -->
                 <!-- END SCRATCH PAD -->
 
               </div>
