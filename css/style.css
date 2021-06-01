@@ -74,66 +74,16 @@ html, body {
     background-color:white;
 }
 
-#content-container {
-    display:flex;
-    /* background-color:lightcoral; */
-    height:100%;
-}
-
-#detail-questions {
-    width:100%;
-    /* height:100%; */
-    max-height:Calc(100vh - 120px);
-    /* background-color:lightblue; */
-    overflow-y:auto;
-    transition:.3s;
-}
-
-#detail-summary {
-    width:46%;
-    min-width:350px;
-    height:100%;
-    /* background-color:lightgoldenrodyellow; */
-    /* display:flex; */
-    display:none;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    /* overflow-y:scroll; */
-}
 
 
 
-#summary-area {
-    /* background-color:lightgray; */
-    display:flex;
-    flex-direction:column;
-    width:calc(100% - 82px);
-    height:calc(100% - 60px);
-    margin-bottom:20px;
-    /* margin:30px; */
-    /* box-sizing:border-box; */
-    border: 1px solid #D1DAE9;
-    border-bottom-right-radius:15px;
-    border-bottom-left-radius:15px;
-    /* margin:20px; */
-    padding:10px;
-    padding-top:0px;
-    /* overflow-y:scroll; */
-}
 
-#summary-head {
-    background-color:#354B85;
-    color:white;
-    width:calc(100% - 60px);
-    height:35px;
-    display:flex;
-    align-items: center;
-    justify-content: center;
-    margin-top:27px;
-    border-top-right-radius:15px;
-    border-top-left-radius:15px;
-}
+
+
+
+
+
+
 
 .heading {
     font-weight:lighter;
@@ -290,6 +240,7 @@ html, body {
      */
     margin-bottom:10px;
     font-weight:bolder;
+    /* text-align:center; */
 }
 
 .summary-area {
@@ -299,9 +250,7 @@ html, body {
     margin-bottom:10px;
 }
 
-#mail-summary {
-    margin-top:10px;
-}
+
 
 .summary-item {
     margin-top:10px;
@@ -531,11 +480,7 @@ html, body {
     filter:brightness(110%);
 }
 
-.disc {
-    font-size:7pt;
-    /* margin:0px 5px 10px 10px; */
 
-}
 
 
 .pay-selected {
@@ -553,13 +498,6 @@ html, body {
     margin-right:8px;
 }
 
-.add-to-cart-buttons {
-    display:flex;
-}
-
-.add-to-cart-buttons div {
-    margin-right:8px;
-}
 
 
 #message-container {
@@ -701,10 +639,135 @@ html, body {
     text-decoration: underline;
 }
 
+
 .dn {
-    font-size:12pt;
+    font-size:11pt;
+    font-weight:bolder;
+
+    /* color:white; */
+}
+
+#dn {
+
+    /* font-weight:bolder; */
+    /* background-color:#354B85; */
+    border:1px solid rgba(0,0,0,.1);
+    padding:5px 14px;
+    margin-bottom:0px;
+    margin-top:15px;
+    border-radius:10px;
+}
+
+.disc {
+    font-size:9pt;
+}
+
+#date-disc {
     font-weight:bolder;
 }
+
+/**
+    FIXING THE ORDER DETAILS AREA
+*/
+
+#content-container {
+    display:flex;
+    /* background-color:lightcoral; */
+    max-height:Calc(100vh - 120px);
+    height:100%;
+}
+
+
+#detail-questions {
+    /* width:100%; */
+    /* height:100%; */
+    
+    /* background-color:lightblue; */
+    overflow-y:auto;
+    transition:.3s;
+}
+
+
+#detail-summary {
+    width:360px;
+    min-width:360px;
+    /* margin:0px 10px; */
+    display:none;
+    /* display:flex; */
+    flex-direction:column;
+    /* flex-grow: */
+}
+
+#summary-head {
+    display:flex;
+    align-items: center;
+    justify-content: center;
+    background-color:#354B85;
+    border-radius:5px;
+    height:30px;
+    /* margin-top:10px; */
+    color:white;
+    /* border-top-left-radius: 10px;
+    border-top-right-radius: 10px; */
+    /* height:100%; */
+}
+
+#summary-head > h4 {
+    font-weight:bolder;
+}
+
+#mail-summary {
+    margin-top:10px;
+
+}
+
+#summary {
+    /* flex-grow:1; */
+    height:100%;
+    overflow-y:auto;
+    /* background-color:lightcoral; */
+    padding:10px;
+    margin:10px;
+    margin-bottom:0px;
+    /* border: 1px solid rgba(0,0,0,.1); */
+    border-radius:10px;
+}
+/* #summary-area {
+
+} */
+
+.add-to-cart-buttons {
+    display:flex;
+}
+
+.add-to-cart-button {
+    margin-right:20px;
+}
+
+/* .summary-add-to-cart-buttons  */
+
+.summary-add-to-cart-buttons-container {
+    display:flex;
+    height:70px;
+    align-items: center;
+    margin:0px 20px;
+}
+
+.summary-add-to-cart-buttons {
+    width:120px;
+    margin:auto;
+}
+
+.due-now {
+    display:flex;
+    /* width:100%; */
+    margin:10px 30px;
+    font-weight:bolder;
+}
+
+#dn-value {
+    margin-left:auto;
+} 
 
 
 

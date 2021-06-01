@@ -21,6 +21,7 @@
 
 #summary-area {
     height:unset;
+    overflow-y:auto;
 }
 
 #summary-head {
@@ -34,6 +35,6 @@
     flex-direction:unset;
     align-items: unset;
     justify-content: unset;
-    overflow-y:auto;
+    /* overflow-y:auto; */
 
 }

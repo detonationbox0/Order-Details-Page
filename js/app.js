@@ -207,7 +207,7 @@ var orderDetailsHandler = {
             }
 
             // If this property is not in Order Details yet, add it
-            if (!$("date-value").length) {
+            if (!$("#date-value").length) {
 
 
                 // If the mailing area is not in Order Details yet, add it.
@@ -223,7 +223,7 @@ var orderDetailsHandler = {
                 `)
             } else {
                 // This property is there, set it's text to value
-                $("#date-value").text(value);
+                $("#date-value, #date-disc").text(value);
             }
 
             // Update the button here.
@@ -372,7 +372,7 @@ var orderDetailsHandler = {
                 // Add this property
                 $("#dn").before(`
                     <div class="summary-item" id="tc">
-                        <div class="summary-item-text summary-item-title bold" id="tc-title">Total Cost:</div>
+                        <div class="summary-item-text summary-item-title bold" id="tc-title">Grand Total:</div>
                         <div class="summary-item-text summary-item-value bold" id="tc-value">${intToPrice(value)}</div>
                     </div>
                 `)
@@ -522,7 +522,7 @@ var orderDetailsHandler = {
                     addDeetArea("summary-extras");
                     
                     // Add this property
-                    $("#summary-extras").append(`
+                    $("#eq").after(`
                         <div class="summary-item" id="eppp">
                             <div class="summary-item-text summary-item-title" id="eppp-title">Price per Piece:</div>
                             <div class="summary-item-text summary-item-value" id="eppp-value">${intToPrice(value)}</div>
@@ -617,7 +617,7 @@ var orderDetailsHandler = {
                 $("#ship").remove();
 
                 console.log('orderDetailsHandler: ship must be a number.');
-
+                throw ('orderDetailsHandler: ship must be a number.') // Stop execution
                 
             }
 
@@ -630,7 +630,7 @@ var orderDetailsHandler = {
 
                 // Add this property BEFORE Print Cost, which must exist
                 // before this property is updated per logic of page
-                $("#pc").before(`
+                $("#eq").before(`
                     <div class="summary-item" id="ship">
                         <div class="summary-item-text summary-item-title" id="ship-title">Ship To:</div>
                         <div class="summary-item-text summary-item-value" id="ship-value">${value}</div>
@@ -639,7 +639,7 @@ var orderDetailsHandler = {
 
             } else {
                 // This property is there, set it's text to value
-                $("#pc-value").text(value);
+                $("#ship-value").text(value);
             }
 
             console.log(`ship has been updated to ${value}`);
@@ -747,10 +747,18 @@ var orderDetailsHandler = {
                 // Add this property
                 $("#dn").before(`
                     <div class="summary-item" id="wmc">
-                        <div class="summary-item-text summary-item-title bold" id="wmc-title">Weekly Mailing Cost:</div>
+                        <div class="summary-item-text summary-item-title bold" id="wmc-title">Total Weekly Cost:</div>
                         <div class="summary-item-text summary-item-value bold" id="wmc-value">${intToPrice(value)}</div>
+                        
+                    </div>
+                    <div class="summary-item" id="disc">
+                        <div class="summary-item-text summary-item-title bold" id="disc-title">Payments Begin:</div>
+                        <div class="summary-item-text summary-item-value bold" id="disc-value">${orderProxy.date}</div>
+                        
                     </div>
                 `)
+                // <div class="disc">Payments begin <span id="date-disc"></span></div>
+
             } else {
                 // This property is there, set it's text to value
                 $("#wmc-value").text(intToPrice(value));
@@ -861,6 +869,12 @@ var orderDetailsHandler = {
 
             console.log(`on has been updated to ${value}`);
 
+            // This question has been saved.
+            // Update this question's button
+            $("#pay-next-button").removeClass("question-button").text("Saved!").addClass("question-set");
+
+            // Check to see if we should show the final question
+            checkForCartQuestion();
             // checkForCartQuestion();
 
 
@@ -1175,6 +1189,7 @@ $("#qty-next-button").on("click", function() {
         orderProxy.eppp = Number(chosenPPP);
 
         orderProxy.tc = (Number(chosenQty) * Number(chosenPPP)) + orderProxy.tc;
+        orderProxy.wmc = orderProxy.tc / orderProxy.weeks;
 
         // calcDeets();
 
@@ -1213,6 +1228,9 @@ $("#qty-next-button").on("click", function() {
             $(this).removeClass("question-button").text("Saved!").addClass("question-set");
 
         }
+        
+        // $(this).removeClass("question-button").text("Saved!").addClass("question-set");
+        // checkForCartQuestion();
 
 
     } else {
@@ -1225,6 +1243,7 @@ $("#qty-next-button").on("click", function() {
         orderProxy.eppp = 0;
         orderProxy.tpc = 0;
         orderProxy.tc = orderProxy.tmc;
+        orderProxy.wmc = orderProxy.tc / orderProxy.weeks;
 
         console.log("Skipping the shipping question");
         if (!$("#addcc-button").length) {
@@ -1252,7 +1271,7 @@ $("#qty-next-button").on("click", function() {
                     <option value="Friday">Friday</option>
                     </select>
                 </div>
-                <div class="question-set" id="pay-next-button">
+                <div class="question-button" id="pay-next-button">
                                         Continue
                 </div>
             </div>`
@@ -1264,8 +1283,7 @@ $("#qty-next-button").on("click", function() {
             }) 
         }
 
-        $(this).removeClass("question-button").text("Saved!").addClass("question-set");
-        checkForCartQuestion();
+
 
 
     }
@@ -1302,6 +1320,7 @@ $(document).on("change", "#datepicker", function() {
 
     // Update the week proxy with the chosen date
     var chosenDate = $("#datepicker").val();
+
     orderProxy.date = chosenDate;
 
     // Only add the next question if it's not there already...
@@ -1742,7 +1761,7 @@ $(document).on('change', "#ship-sel", function() {
   * The user clicks add to cart
   */
 
-$(document).on("click", ".add-to-cart-button", function() {
+$(document).on("click", ".add-to-cart-button, .summary-add-to-cart-buttons", function() {
     //#region
     var thisVal = $(this).attr("value");
     if (thisVal == "add") {
@@ -1785,6 +1804,14 @@ $(document).on("click", ".show-table", function() {
         $(this).text("Show Price Guide");
     }
 });
+
+$(document).on("change", "#day-of-week", function() {
+    requireUpdate("#pay-next-button");
+})
+
+$(document).on("change", "#extras-qty-input", function() {
+    requireUpdate("#extras-next-button");
+})
 
 /** ===--------------------------------------------------------------------------------------------===
  * CUSTOM FUNCTIONS ↓
@@ -1945,14 +1972,14 @@ function requireUpdate(refid) {
     
     // If the Add to Cart area is there, hide it!
     if ($("#add-next-button").length) {
-        $("#add-to-cart-question").slideUp("fast", function() {
+        $("#add-to-cart-question, .summary-add-to-cart-buttons-container").slideUp("fast", function() {
             $(this).remove();
             
         })
 
-        $(".add-to-cart-button").slideUp("fast", function() {
-            $(this).remove();
-        })
+        // $(".add-to-cart-button").slideUp("fast", function() {
+        //     $(this).remove();
+        // })
 
     }
 
@@ -1996,13 +2023,25 @@ function checkForCartQuestion() {
                 scrollToBottom();
             });
 
-            if (!$(".summary-add-button").length) {
-                $("#summary-area").append(`
-                <div class="add-to-cart-buttons">
-                    <div class="question-button add-to-cart-button add-to-cart-button summary-add-button" value="add" >Add to cart</div>
-                    <div class="question-button add-to-cart-button add-to-cart-button summary-add-button" value="save">Save for Later</div>
+            if (!$(".summary-add-to-cart-buttons-container").length) {
+
+
+                // <div class="due-now"><div id="dn-name">Due Now:</div><div id="dn-value">$${orderProxy.dn}.00</div></div>
+
+                $("#detail-summary").append(`
+
+                <div class="summary-add-to-cart-buttons-container">
+                    <div class="question-button summary-add-to-cart-buttons" value="add" >Add to cart</div>
+                    <div class="question-button summary-add-to-cart-buttons" value="save">Save for Later</div>
                 </div>
                 `);
+
+                // $("#summary-area").append(`
+                // <div class="add-to-cart-buttons">
+                //     <div class="question-button add-to-cart-button add-to-cart-button summary-add-button" value="add" >Add to cart</div>
+                //     <div class="question-button add-to-cart-button add-to-cart-button summary-add-button" value="save">Save for Later</div>
+                // </div>
+                // `);
             }
             // Append the Cart and Save buttons to the order details summary
             
@@ -2132,7 +2171,7 @@ function addDeetArea(areaid) {
 
     // If the order details is hidden, then display it
     if(!$("#detail-summary").is(":visible")){
-        $("#detail-summary").show();
+        $("#detail-summary").css("display", "flex");
     }
 
 
