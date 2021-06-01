@@ -38,7 +38,7 @@ html, body {
 
 #content-head {
     width:100%;
-    height:65px;
+    min-height:65px;
 /* background-color:green; */
 }
 
@@ -47,6 +47,7 @@ html, body {
     flex-direction:column;
     width:Calc(100% - 70px);
     height:Calc(100% - 40px);
+    /* max-height:850px; */
     background-color:white;
     margin:0px 40px 40px 40px;
     border-bottom-right-radius:20px;
@@ -93,31 +94,50 @@ html, body {
     min-width:350px;
     height:100%;
     /* background-color:lightgoldenrodyellow; */
-    display:flex;
+    /* display:flex; */
+    display:none;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    /* overflow-y:scroll; */
 }
 
 
 
 #summary-area {
     /* background-color:lightgray; */
-    display:block;
-    width:calc(100% - 60px);
+    display:flex;
+    flex-direction:column;
+    width:calc(100% - 82px);
     height:calc(100% - 60px);
     margin-bottom:20px;
     /* margin:30px; */
-    box-sizing:border-box;
+    /* box-sizing:border-box; */
     border: 1px solid #D1DAE9;
-    border-radius:20px;
+    border-bottom-right-radius:15px;
+    border-bottom-left-radius:15px;
     /* margin:20px; */
-    padding:20px;
+    padding:10px;
+    padding-top:0px;
+    /* overflow-y:scroll; */
+}
+
+#summary-head {
+    background-color:#354B85;
+    color:white;
+    width:calc(100% - 60px);
+    height:35px;
+    display:flex;
+    align-items: center;
+    justify-content: center;
+    margin-top:27px;
+    border-top-right-radius:15px;
+    border-top-left-radius:15px;
 }
 
 .heading {
     font-weight:lighter;
-    font-size:14pt;
+    font-size:12pt;
     margin:0px;
 }
 
@@ -266,13 +286,26 @@ html, body {
 
 
 .summary-area-head {
-    margin-top:20px;
+    /* margin-top:10px;
+     */
     margin-bottom:10px;
+    font-weight:bolder;
+}
+
+.summary-area {
+    padding:15px;
+    border: 1px solid rgba(0,0,0,.1);
+    border-radius:10px;
+    margin-bottom:10px;
+}
+
+#mail-summary {
+    margin-top:10px;
 }
 
 .summary-item {
     margin-top:10px;
-    /* margin-bottom:10px; */
+    margin-bottom:10px;
     display:flex;
 }
 
@@ -313,6 +346,10 @@ html, body {
     display:flex;
     flex-wrap:wrap;
     margin-top:20px;
+}
+
+#wmc {
+    margin-bottom:0px;
 }
 
 .num-week-choice {
@@ -394,31 +431,13 @@ html, body {
     cursor:pointer;
 }
 
-#bottom-summary {
-    width:100%;
-    /* height:200px; */
-    /* background-color: antiquewhite; */
-    margin:20px auto;
-    border: 1px solid #D1DAE9;
-    border-radius:10px;
-    padding-bottom:10px;
-    /* padding:10px; */
-}
-
-#wmc {
-    
-    padding:10px;
-    padding-bottom:0px;
-    padding-top:0px;
-}
-
 #summary-total {
     /* background-color:lightblue; */
-    margin-top:20px;
+    /* margin-toep:20px; */
     padding-top:20px;
-    border-top-width:1px;
+    /* border-top-width:1px;
     border-top-style:solid;
-    border-top-color: #D1DAE9;
+    border-top-color: #D1DAE9; */
 }
 
 #tc {
@@ -439,13 +458,6 @@ html, body {
      margin-top:20px;
 }
 
-#summary-extras {
-    margin-top:20px;
-    /* padding-top:20px; */
-    border-top-width:1px;
-    border-top-style:solid;
-    border-top-color: #D1DAE9;
-}
 
 #ship-value {
     max-width:180px;
@@ -521,17 +533,10 @@ html, body {
 
 .disc {
     font-size:7pt;
-    margin:0px 5px 10px 10px;
+    /* margin:0px 5px 10px 10px; */
 
 }
 
-.summary-item-bottom {
-    padding:0px 10px;
-}
-
-#dn {
-    margin-bottom:20px;
-}
 
 .pay-selected {
     color:white !important;
@@ -599,9 +604,9 @@ html, body {
     text-align:center;
 }
 
-#dn-title, #dn-value {
+/* #dn-title, #dn-value {
     font-size:12pt;
-}
+} */
 
 .summary-add-button {
     width:100%;
@@ -682,6 +687,27 @@ html, body {
     margin-right:unset;
     margin:0px 5px;
 }
+
+.sel-area {
+    margin: 20px 0px;
+}
+
+.sel-format {
+    height:30px;
+    min-width:200px;
+}
+
+#tc-value, #wmc-value, #tpc-value, #tmc-value, #dn-value {
+    text-decoration: underline;
+}
+
+.dn {
+    font-size:12pt;
+    font-weight:bolder;
+}
+
+
+
 /* No longer worried about mobile - that will be for another day */
 
 

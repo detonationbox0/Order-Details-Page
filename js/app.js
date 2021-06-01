@@ -67,19 +67,24 @@ const myTable = `<div class="toggler">
 const orderDetails = {
     //#region 
 
-    qty:10000, // Quantity
-    ppp:.32, // Price per Piece
-    date:"-", // In Home Date
-    weeks:1, // Mailing Weeks
-    tmc: 3200, // Total Mailing Cost
-    tc:3200, // Total Cost
-    wmc:3200, // Weelky Mailing Cost
-    ship:"-", // Extras Quantity
-    shipp:"$65.99",
-    eq:10000, // Extras Quantity
-    pm:"Card ending in... 0000",
-    eppp:.32, // Extras Price Per Piece
-    tpc:.32, // Total Print Cost
+    qty:null, // Quantity
+    ppp:null, // Price per Piece
+    date:null, // In Home Date
+    weeks:null, // Mailing Weeks
+    tmc: null, // Total Mailing Cost
+    tc:null, // Total Cost
+    wmc:null, // Weelky Mailing Cost (Later changed to be displayed as Total Weekly Cost)
+    ship:null, // Ship To
+    shipp:null, // Shipping Price
+    eq:null, // Extras Quantity
+    eppp:null, // Extras Price Per Piece
+    tpc:null, // Total Print Cost
+    pc:null, // Print Cost
+    pm:null, // Payment Method
+    on:null, // Debit On day
+    ccfee:null, // Credit Card Fee
+    dn:null // Due Now
+
     //#endregion
 }
 
@@ -91,276 +96,872 @@ var orderDetailsHandler = {
         //`property` is the property that has changed
         //`value` is the new value of the property
 
-        /** ===---------------------------------------------------------------===
-         * Quantity has been updated ↓
+        /** ---------------------------------------------------------------
+         * ===  Quantity has been updated  === ↓
+         *  ---------------------------------------------------------------
          */
 
          if (property === 'qty') {
             // Value must be a number.
             if (typeof value !== 'number') {
-                throw new Error('Quantity must be a number.');
+
+                // By setting this value to anything but a number, we should
+                // remove it from the dom.
+                $("#qty").remove();
+
+                console.log('orderDetailsHandler: qty must be a number.');
             }
-            // This item is in DOM from the start.
-            // Update the DOM with locale string version of `value`
-            $("#qty-value").text(value.toLocaleString());
 
-            // Update the button here.
+            // If this property is not in Order Details yet, add it
+            if (!$("#qty-value").length) {
+
+
+                // If the mailing area is not in Order Details yet, add it.
+                addDeetArea("mail-summary");
+                
+                // Add this property
+                $("#mail-summary").append(`
+                    <div class="summary-item" id="qty">
+                        <div class="summary-item-text summary-item-title" id="qty-title">Quantity:</div>
+                        <div class="summary-item-text summary-item-value" id="qty-value">${value.toLocaleString()}</div>
+                    </div>
+                `)
+            } else {
+                // This property is there, set it's text to value
+                $("#qty-value").text(value.toLocaleString());
+            }
+
+            // This question has been saved.
+            // Update this question's button
             $("#qty-next-button").removeClass("question-button").text("Saved!").addClass("question-set");
+
+
+            // Check to see if we should show the final question
             checkForCartQuestion();
-            // if ($("#qty-next-button").text().includes("Continue")) {
-            // };
-
-
 
             console.log(`qty has been updated to ${value}`);
-            checkForCartQuestion();
         }
 
 
 
-        /** ===---------------------------------------------------------------===
-         * Price per Piece has been updated ↓
+
+        /** ---------------------------------------------------------------
+         * ===  Price per Piece has been updated  === ↓
+         *  ---------------------------------------------------------------
          */
 
          if (property === 'ppp') {
             // Value must be a number.
             if (typeof value !== 'number') {
-                throw new Error('Price per Piece must be a number.');
+
+                // By setting this value to anything but a number, we should
+                // remove it from the dom.
+                $("#ppp").remove();
+
+                console.log('orderDetailsHandler: ppp must be a number.');
             }
-            // This item is in DOM from the start.
-            // Update the DOM with locale string version of `value`
-            $("#ppp-value").text(intToPrice(value));
+
+            // If this property is not in Order Details yet, add it
+            if (!$("#ppp-value").length) {
+
+
+                // If the mailing area is not in Order Details yet, add it.
+                addDeetArea("mail-summary");
+                
+                // Add this property
+                $("#mail-summary").append(`
+                    <div class="summary-item" id="ppp">
+                        <div class="summary-item-text summary-item-title" id="ppp-title">Price per Piece:</div>
+                        <div class="summary-item-text summary-item-value" id="ppp-value">${intToPrice(value)}</div>
+                    </div>
+                `)
+            } else {
+                // This property is there, set it's text to value
+                $("#ppp-value").text(intToPrice(value));
+            }
+
+            // This item should be updated along with Quantity
+            // So we shouldn't have to update this question's button.
+            // We also shouldn't have to check for the add to cart question
+            // $("#qty-next-button").removeClass("question-button").text("Saved!").addClass("question-set");
+            // checkForCartQuestion();         
 
             console.log(`ppp has been updated to ${value}`);
 
         }
 
-                /** ===---------------------------------------------------------------===
-         * Date has been updated ↓
+        /** ---------------------------------------------------------------
+         * ===  In Home Date has been updated  === ↓
+         *  ---------------------------------------------------------------
          */
 
         if (property === 'date') {
             // Value must be a string.
             if (typeof value !== 'string') {
-                throw new Error('Date must be a string.');
+
+                // By setting this value to anything but a string, we should
+                // remove it from the dom.
+                $("#date").remove();
+
+                console.log('orderDetailsHandler: date must be a number.');
             }
-            // This item was added to DOM when the user clicked the next button on q1.
-            // Update the DOM with locale string version of `value`
-            $("#date-value").text(value);
+
+            // If this property is not in Order Details yet, add it
+            if (!$("date-value").length) {
+
+
+                // If the mailing area is not in Order Details yet, add it.
+                addDeetArea("mail-summary");
+                
+                // Add this property BEFORE Total Mailing Cost, which must exist
+                // before this property is updated per logic of page
+                $("#tmc").before(`
+                    <div class="summary-item" id="date">
+                        <div class="summary-item-text summary-item-title" id="date-title">First In-Home Week:</div>
+                        <div class="summary-item-text summary-item-value" id="date-value">${value}</div>
+                    </div>
+                `)
+            } else {
+                // This property is there, set it's text to value
+                $("#date-value").text(value);
+            }
 
             // Update the button here.
             $("#week-next-button").removeClass("question-button").text("Saved!").addClass("question-set");
+
+            // Check to see if we should show the final question
             checkForCartQuestion();
+
             console.log(`date has been updated to ${value}`);
 
+
         }
 
-
-        /** ===---------------------------------------------------------------===
-         * Total Mailing Cost has been updated ↓
-         */
-
-        if (property === 'tmc') {
-            // Value must be a number.
-            if (typeof value !== 'number') {
-                throw new Error('Total Mailing Cost must be a number.');
-            }
-            // This item is in DOM from the start.
-            // Update the DOM with locale string version of `value`
-            $("#tmc-value").text(intToPrice(value));
-
-            console.log(`tmc has been updated to ${value}`);
-        }
-
-
-        /** ===---------------------------------------------------------------===
-         * Mailing Weeks has been updated ↓
+        /** ---------------------------------------------------------------
+         * ===  Mailing Weeks has been updated  === ↓
+         *  ---------------------------------------------------------------
          */
 
          if (property === 'weeks') {
             // Value must be a number.
             if (typeof value !== 'number') {
-                throw new Error('Price per Piece must be a number.');
+
+                // By setting this value to anything but a number, we should
+                // remove it from the dom.
+                $("#weeks").remove();
+
+                console.log('orderDetailsHandler: weeks must be a number.');
             }
-            // This item is in DOM from the start.
-            // Update the DOM with locale string version of `value`
-            $("#weeks-value").text(value);
+
+            // If this property is not in Order Details yet, add it
+            if (!$("#weeks-value").length) {
+
+
+                // If the mailing area is not in Order Details yet, add it.
+                addDeetArea("mail-summary");
+                
+                // Add this property BEFORE Total Mailing Cost, which must exist
+                // before this property is updated per logic of page
+                $("#tmc").before(`
+                    <div class="summary-item" id="weeks">
+                        <div class="summary-item-text summary-item-title" id="weeks-title">Mailing Weeks:</div>
+                        <div class="summary-item-text summary-item-value" id="weeks-value">${value}</div>
+                    </div>
+                `);
+
+            } else {
+                // This property is there, set it's text to value
+                $("#weeks-value").text(value.toLocaleString());
+            }
+
+            // This question has been saved.
+            // Update this question's button
+            $("#numweek-next-button").removeClass("question-button").text("Saved!").addClass("question-set");
+
+            // Check to see if we should show the final question
+            checkForCartQuestion();
 
             console.log(`weeks has been updated to ${value}`);
 
-            // Any time the week is changed, re-enable the button
-            $("#numweek-next-button").removeClass("question-button").text("Saved!").addClass("question-set");
-            checkForCartQuestion();
+            
         }
 
-        /** ===---------------------------------------------------------------===
-         * Total Cost has been updated ↓
+
+        /** ---------------------------------------------------------------
+         * ===  Total Mailing Cost has been updated  === ↓
+         *  ---------------------------------------------------------------
+         */
+
+        if (property === 'tmc') {
+            // Value must be a number.
+            if (typeof value !== 'number') {
+                // By setting this value to anything but a number, we should
+                // remove it from the dom.
+                $("#tmc").remove();
+
+                console.log('orderDetailsHandler: tmc must be a number.');
+
+
+            }
+
+            // If this property is not in Order Details yet, add it
+            if (!$("#tmc-value").length) {
+
+
+                // If the mailing area is not in Order Details yet, add it.
+                addDeetArea("mail-summary");
+                
+                // Add this property
+                $("#mail-summary").append(`
+                    <div class="summary-item" id="tmc">
+                        <div class="summary-item-text summary-item-title bold" id="tmc-title">Total Mailing Cost:</div>
+                        <div class="summary-item-text summary-item-value bold" id="tmc-value">${intToPrice(value)}</div>
+                    </div>
+                `)
+            } else {
+                // This property is there, set it's text to value
+                $("#tmc-value").text(intToPrice(value));
+            }
+
+            console.log(`tmc has been updated to ${value}`);
+
+            // This property should be updated every time calcDeets is ran
+            // Therefore, there's no button to update, and no need to check
+            // for the last question
+
+            // $("#week-next-button").removeClass("question-button").text("Saved!").addClass("question-set");
+            // checkForCartQuestion();
+
+            console.log(`tmc has been updated to ${value}`);
+
+
+
+            // $("#tmc-value").text(intToPrice(value));
+
+            
+        }
+
+
+        
+
+        /** ---------------------------------------------------------------
+         * ===  Total Cost has been updated  === ↓
+         *  ---------------------------------------------------------------
          */
 
          if (property === 'tc') {
+
             // Value must be a number.
             if (typeof value !== 'number') {
-                throw new Error('Total Cost must be a number.');
+                // By setting this value to anything but a number, we should
+                // remove it from the dom.
+                $("#tc").remove();
+
+                console.log('orderDetailsHandler: tc must be a number.');
+
+                
             }
-            // This item is in DOM from the start.
-            // Update the DOM with locale string version of `value`
-            $("#tc-value").text(intToPrice(value));
+
+            // If this property is not in Order Details yet, add it
+            if (!$("#tc-value").length) {
+
+
+                // If the mailing area is not in Order Details yet, add it.
+                addDeetArea("bottom-summary");
+                
+                // Add this property
+                $("#dn").before(`
+                    <div class="summary-item" id="tc">
+                        <div class="summary-item-text summary-item-title bold" id="tc-title">Total Cost:</div>
+                        <div class="summary-item-text summary-item-value bold" id="tc-value">${intToPrice(value)}</div>
+                    </div>
+                `)
+            } else {
+                // This property is there, set it's text to value
+                $("#tc-value").text(intToPrice(value));
+            }
 
             console.log(`tc has been updated to ${value}`);
 
+
         }
 
-        /** ===---------------------------------------------------------------===
-         * Weekly Mailing Cost has been updated ↓
+        /** ---------------------------------------------------------------
+         * ===  Print Cost has been updated  === ↓
+         *  ---------------------------------------------------------------
          */
 
-         if (property === 'wmc') {
+         if (property === 'pc') {
+
             // Value must be a number.
             if (typeof value !== 'number') {
-                throw new Error('Weekly Mailing Price must be a number.');
-            }
-            // This item is in DOM from the start.
-            // Update the DOM with locale string version of `value`
-            $("#wmc-value").text(intToPrice(value));
+                // By setting this value to anything but a number, we should
+                // remove it from the dom.
+                $("#pc").remove();
 
-            console.log(`wmc has been updated to ${value}`);
+                console.log('orderDetailsHandler: pc must be a number.');
+
+                
+            }
+
+            if (value == 0) {
+                // Remove the extras area and continue
+                $("#summary-extras").remove();
+                // continue;
+            } else {
+                // If this property is not in Order Details yet, add it
+                if (!$("#pc-value").length) {
+
+
+                    // If the mailing area is not in Order Details yet, add it.
+                    addDeetArea("summary-extras");
+                    
+                    // Add this property
+                    $("#summary-extras").append(`
+                        <div class="summary-item" id="pc">
+                            <div class="summary-item-text summary-item-title" id="pc-title">Print Cost:</div>
+                            <div class="summary-item-text summary-item-value" id="pc-value">${intToPrice(value)}</div>
+                        </div>
+                    `)
+
+                } else {
+                    // This property is there, set it's text to value
+                    $("#pc-value").text(intToPrice(value));
+                }
+
+                console.log(`pc has been updated to ${value}`);
+            }
+
+            
+
+
+            
+        }
+
+        /** ---------------------------------------------------------------
+         * ===  Extras Quantity has been updated  === ↓
+         *  ---------------------------------------------------------------
+         */
+         if (property === 'eq') {
+
+            // Value must be a number.
+            if (typeof value !== 'number') {
+
+                // By setting this value to anything but a number, we should
+                // remove it from the dom.
+                $("#eq").remove();
+
+                console.log('orderDetailsHandler: eq must be a number.');
+            }
+
+            if (value == 0) {
+                // Remove the extras area and continue
+                $("#summary-extras").remove();
+            } else {
+
+                // If this property is not in Order Details yet, add it
+                if (!$("#eq-value").length) {
+
+
+                    // If the mailing area is not in Order Details yet, add it.
+                    addDeetArea("summary-extras");
+                    
+                    // Add this property
+                    $("#summary-extras").append(`
+                        <div class="summary-item" id="eq">
+                            <div class="summary-item-text summary-item-title" id="eq-title">Print Copies:</div>
+                            <div class="summary-item-text summary-item-value" id="eq-value">${value.toLocaleString()}</div>
+                        </div>
+                    `)
+                } else {
+                    // This property is there, set it's text to value
+                    $("#eq-value").text(value.toLocaleString());
+                }
+
+                // This question has been saved.
+                // Update this question's button
+                $("#extras-next-button").removeClass("question-button").text("Saved!").addClass("question-set");
+
+                // Check to see if we should show the final question
+                // checkForCartQuestion();
+
+                console.log(`eq has been updated to ${value}`);
+            }
 
         }
 
-                /** ===---------------------------------------------------------------===
-         * Date has been updated ↓
+
+
+        /** ---------------------------------------------------------------
+         * ===  Extras Price per Piece has been updated  === ↓
+         *  ---------------------------------------------------------------
+         */
+         if (property === 'eppp') {
+
+
+            // Value must be a number.
+            if (typeof value !== 'number') {
+
+                // By setting this value to anything but a number, we should
+                // remove it from the dom.
+                $("#eppp").remove();
+
+                console.log('orderDetailsHandler: eppp must be a number.');
+            }
+
+            if (value == 0) {
+                // Remove the extras area and continue
+                $("#summary-extras").remove();
+            } else {
+
+                // If this property is not in Order Details yet, add it
+                if (!$("#eppp-value").length) {
+
+
+                    // If the mailing area is not in Order Details yet, add it.
+                    addDeetArea("summary-extras");
+                    
+                    // Add this property
+                    $("#summary-extras").append(`
+                        <div class="summary-item" id="eppp">
+                            <div class="summary-item-text summary-item-title" id="eppp-title">Price per Piece:</div>
+                            <div class="summary-item-text summary-item-value" id="eppp-value">${intToPrice(value)}</div>
+                        </div>
+                    `)
+                } else {
+                    // This property is there, set it's text to value
+                    $("#eppp-value").text(intToPrice(value));
+                }
+
+                // This item should be updated along with Quantity
+                // So we shouldn't have to update this question's button.
+                // We also shouldn't have to check for the add to cart question
+                // $("#qty-next-button").removeClass("question-button").text("Saved!").addClass("question-set");
+                // checkForCartQuestion();   
+                
+                $("#eppp-value").text(intToPrice(value));
+
+
+                console.log(`eppp has been updated to ${value}`);
+            }
+
+            
+        }
+
+
+        /** ===---------------------------------------------------------------===
+         * Shipping Price has been updated ↓
+         */
+        if (property === 'shipp') {
+
+            // Value must be a number.
+            if (typeof value !== 'number') {
+
+                // By setting this value to anything but a number, we should
+                // remove it from the dom.
+                $("#shipp").remove();
+
+                console.log('orderDetailsHandler: shipp must be a number.');
+            }
+
+
+            if (value == 0) {
+                // Remove the extras area and continue
+                $("#summary-extras").remove();
+            } else {
+                // If this property is not in Order Details yet, add it
+                if (!$("#shipp-value").length) {
+
+
+                    // If the extras area is not in Order Details yet, add it.
+                    addDeetArea("summary-extras");
+                    
+                    // Add this property
+                    $("#summary-extras").append(`
+                        <div class="summary-item" id="shipp">
+                            <div class="summary-item-text summary-item-title" id="shipp-title">Shipping:</div>
+                            <div class="summary-item-text summary-item-value" id="shipp-value">${intToPrice(value)}</div>
+                        </div>
+                    `)
+                } else {
+                    // This property is there, set it's text to value
+                    $("#shipp-value").text(intToPrice(value));
+                }
+
+                // This item should be updated along with Quantity
+                // So we shouldn't have to update this question's button.
+                // We also shouldn't have to check for the add to cart question
+                // $("#qty-next-button").removeClass("question-button").text("Saved!").addClass("question-set");
+                // checkForCartQuestion();   
+                
+                $("#shipp-value").text(intToPrice(value));
+
+
+                console.log(`shipp has been updated to ${value}`);
+            }
+
+        }
+        
+
+        /** ---------------------------------------------------------------
+         * === Ship To has been updated  === ↓
+         *  ---------------------------------------------------------------
          */
 
         if (property === 'ship') {
-        // Value must be a string.
-        if (typeof value !== 'string') {
-            throw new Error('Ship To must be a string.');
-        }
-        // This item was added to DOM when the user clicked the next button on q1.
-        // Update the DOM with locale string version of `value`
-        if (value != "-") {
-            $("#ship-value").text(value);
 
-            // Update the button here.
-            $("#ship-next-button").removeClass("question-button").text("Saved!").addClass("question-set");
-            checkForCartQuestion();
-            console.log(`Ship to has been updated to ${value}`);
-        }
-
-
-    }
-    /** ===---------------------------------------------------------------===
-             * Extras Price per Piece has been updated ↓
-             */
-    if (property === 'shipp') {
-        // Value must be a number.
-        if (typeof value !== 'number') {
-            throw new Error('Quantity must be a number.');
-        }
-        // This item is in DOM from the start.
-        // Update the DOM with locale string version of `value`
-        $("#shipp-value").text(intToPrice(value));
-
-        // Update the button here.
-        // $("#extras-next-button").removeClass("question-button").text("Saved!").addClass("question-set");
-
-        // if ($("#qty-next-button").text().includes("Continue")) {
-        // };
-
-
-
-        console.log(`shipping has been updated to ${value}`);
-
-    }
-        /** ===---------------------------------------------------------------===
-         * Extras Price per Piece has been updated ↓
-         */
-        if (property === 'eppp') {
             // Value must be a number.
-            if (typeof value !== 'number') {
-                throw new Error('Quantity must be a number.');
+            if (typeof value !== 'string') {
+                // By setting this value to anything but a number, we should
+                // remove it from the dom.
+                $("#ship").remove();
+
+                console.log('orderDetailsHandler: ship must be a number.');
+
+                
             }
-            // This item is in DOM from the start.
-            // Update the DOM with locale string version of `value`
-            $("#eppp-value").text(intToPrice(value));
 
-            // Update the button here.
-            // $("#extras-next-button").removeClass("question-button").text("Saved!").addClass("question-set");
-
-            // if ($("#qty-next-button").text().includes("Continue")) {
-            // };
+            // If this property is not in Order Details yet, add it
+            if (!$("#ship-value").length) {
 
 
+                // If the mailing area is not in Order Details yet, add it.
+                // addDeetArea("summary-extras");
 
-            console.log(`qty has been updated to ${value}`);
+                // Add this property BEFORE Print Cost, which must exist
+                // before this property is updated per logic of page
+                $("#pc").before(`
+                    <div class="summary-item" id="ship">
+                        <div class="summary-item-text summary-item-title" id="ship-title">Ship To:</div>
+                        <div class="summary-item-text summary-item-value" id="ship-value">${value}</div>
+                    </div>
+                `)
+
+            } else {
+                // This property is there, set it's text to value
+                $("#pc-value").text(value);
+            }
+
+            console.log(`ship has been updated to ${value}`);
+
+            // This question has been saved.
+            // Update this question's button
+            $("#ship-next-button").removeClass("question-button").text("Saved!").addClass("question-set");
+
+            // Check to see if we should show the final question
+            // checkForCartQuestion();
+
+
+            // // This item was added to DOM when the user clicked the next button on q1.
+            // // Update the DOM with locale string version of `value`
+            // if (value != "-") {
+            //     $("#ship-value").text(value);
+
+            //     // Update the button here.
+            //     $("#ship-next-button").removeClass("question-button").text("Saved!").addClass("question-set");
+            //     checkForCartQuestion();
+            //     console.log(`Ship to has been updated to ${value}`);
+            // }
+
 
         }
 
-        /** ===---------------------------------------------------------------===
-         * Total Print Cost has been updated ↓
+
+        /** ---------------------------------------------------------------
+         * === Total Print Cost has been updated  === ↓
+         *  ---------------------------------------------------------------
          */
          if (property === 'tpc') {
+
+
             // Value must be a number.
             if (typeof value !== 'number') {
-                throw new Error('Total print cost must be a number.');
+
+                // By setting this value to anything but a number, we should
+                // remove it from the dom.
+                $("#tpc").remove();
+
+                console.log('orderDetailsHandler: tpc must be a number.');
             }
-            // This item is in DOM from the start.
-            // Update the DOM with locale string version of `value`
-            $(".tpc-value").text(intToPrice(value));
 
-            // Update the button here.
-            // $("#extras-next-button").removeClass("question-button").text("Saved!").addClass("question-set");
+            // If this property is not in Order Details yet, add it
+            if (!$("#tpc-value").length) {
 
-            // if ($("#qty-next-button").text().includes("Continue")) {
-            // };
 
+                // If the extras area is not in Order Details yet, add it.
+                // addDeetArea("summary-extras");
+                
+                // Add this property
+                $("#summary-extras").append(`
+                    <div class="summary-item" id="tpc">
+                        <div class="summary-item-text summary-item-title bold" id="tpc-title">Total Print Cost:</div>
+                        <div class="summary-item-text summary-item-value bold" id="tpc-value">${intToPrice(value)}</div>
+                    </div>
+                `)
+            } else {
+                // This property is there, set it's text to value
+                $("#tpc-value").text(intToPrice(value));
+            }
+
+            // This item should be updated along with Quantity
+            // So we shouldn't have to update this question's button.
+            // We also shouldn't have to check for the add to cart question
+            // $("#qty-next-button").removeClass("question-button").text("Saved!").addClass("question-set");
+            // checkForCartQuestion();  
 
 
             console.log(`tpc has been updated to ${value}`);
+            
+
 
         }
 
-        /** ===---------------------------------------------------------------===
-         * Extras Quantity has been updated ↓
+
+        /** ---------------------------------------------------------------
+         * === Weekly Mailing Cost has been updated  === ↓
+         *  ---------------------------------------------------------------
          */
-        if (property === 'eq') {
+
+         if (property === 'wmc') {
+
+
+
             // Value must be a number.
             if (typeof value !== 'number') {
-                throw new Error('Quantity must be a number.');
+                // By setting this value to anything but a number, we should
+                // remove it from the dom.
+                $("#wmc").remove();
+
+                console.log('orderDetailsHandler: wmc must be a number.');
+
+                
             }
-            // This item is in DOM from the start.
-            // Update the DOM with locale string version of `value`
-            $("#eq-value").text(value.toLocaleString());
 
-            // Update the button here.
-            $("#extras-next-button").removeClass("question-button").text("Saved!").addClass("question-set");
-            checkForCartQuestion();
-            // if ($("#qty-next-button").text().includes("Continue")) {
-            // };
+            // If this property is not in Order Details yet, add it
+            if (!$("#wmc-value").length) {
 
 
+                // If the mailing area is not in Order Details yet, add it.
+                addDeetArea("bottom-summary");
+                
+                // Add this property
+                $("#dn").before(`
+                    <div class="summary-item" id="wmc">
+                        <div class="summary-item-text summary-item-title bold" id="wmc-title">Weekly Mailing Cost:</div>
+                        <div class="summary-item-text summary-item-value bold" id="wmc-value">${intToPrice(value)}</div>
+                    </div>
+                `)
+            } else {
+                // This property is there, set it's text to value
+                $("#wmc-value").text(intToPrice(value));
+            }
 
-            console.log(`qty has been updated to ${value}`);
+            console.log(`wmc has been updated to ${value}`);
+
+
+
 
         }
-
-        /** ===---------------------------------------------------------------===
-         * Payment Method has been updated ↓
-         */
-         if (property === 'pm') {
-            // Value must be a string.
-            if (typeof value !== 'string') {
-                throw new Error('Payment method must be a string.');
-            }
-            // This item was added to DOM when the user clicked the next button on q1.
-            // Update the DOM with locale string version of `value`
-            $("#pm-value").text(value);
 
             
+
+        /** ---------------------------------------------------------------
+         * === Payment Method has been updated  === ↓
+         *  ---------------------------------------------------------------
+         */
+         if (property === 'pm') {
+
+            // Value must be a string.
+            if (typeof value !== 'string') {
+                // By setting this value to anything but a number, we should
+                // remove it from the dom.
+                $("#pm").remove();
+
+                console.log('orderDetailsHandler: pm must be a number.');
+
+                
+            }
+
+            // If this property is not in Order Details yet, add it
+            if (!$("#pm-value").length) {
+
+
+                // If the mailing area is not in Order Details yet, add it.
+                addDeetArea("bottom-summary");
+
+                // Add this property BEFORE Total Cost, which must exist
+                // before this property is updated per logic of page
+                $("#tc").before(`
+                    <div class="summary-item" id="pm">
+                        <div class="summary-item-text summary-item-title" id="pm-title">Payment Method:</div>
+                        <div class="summary-item-text summary-item-value" id="pm-value">${value}</div>
+                    </div>
+                `)
+
+            } else {
+                // This property is there, set it's text to value
+                $("#pm-value").text(value);
+            }
+
             console.log(`pm has been updated to ${value}`);
+
+            // This question has been saved.
+            // Update this question's button
             $("#pay-next-button").removeClass("question-button").text("Saved!").addClass("question-set");
 
+            // Check to see if we should show the final question
+            checkForCartQuestion();
+
+
         }
+
+
+        /** ---------------------------------------------------------------
+         * === Debit On has been updated  === ↓
+         *  ---------------------------------------------------------------
+         */
+
+        if (property === 'on') {
+            // Value must be a string.
+
+            // Value must be a string.
+            if (typeof value !== 'string') {
+                // By setting this value to anything but a number, we should
+                // remove it from the dom.
+                $("#on").remove();
+
+                console.log('orderDetailsHandler: on must be a string.');
+
+                
+            }
+
+            // If there's a Debit on, we should remove the ccfee property
+            $("#ccfee").remove();
+
+            // If this property is not in Order Details yet, add it
+            if (!$("#on-value").length) {
+
+
+                // If the mailing area is not in Order Details yet, add it.
+                addDeetArea("bottom-summary");
+
+                // Add this property BEFORE Total Cost, which must exist
+                // before this property is updated per logic of page
+                $("#tc").before(`
+                    <div class="summary-item" id="on">
+                        <div class="summary-item-text summary-item-title" id="on-title">Debit On:</div>
+                        <div class="summary-item-text summary-item-value" id="on-value">${value}</div>
+                    </div>
+                `)
+
+            } else {
+                // This property is there, set it's text to value
+                $("#on-value").text(value);
+            }
+
+            console.log(`on has been updated to ${value}`);
+
+            // checkForCartQuestion();
+
+
+        }
+
+
+        /** ---------------------------------------------------------------
+         * === Credit Card Fee has been updated  === ↓
+         *  ---------------------------------------------------------------
+         */
+
+         if (property === 'ccfee') {
+
+            // Value must be a string.
+            if (typeof value !== 'number') {
+                // By setting this value to anything but a number, we should
+                // remove it from the dom.
+                $("#ccfee").remove();
+
+                console.log('orderDetailsHandler: ccfee must be a string.');
+
+                
+            }
+
+            // If there's a cc fee, we should remove the Debit On property
+            $("#on").remove();
+
+            // If this property is not in Order Details yet, add it
+            if (!$("#ccfee-value").length) {
+
+
+                // If the mailing area is not in Order Details yet, add it.
+                addDeetArea("bottom-summary");
+
+                // Add this property BEFORE Total Cost, which must exist
+                // before this property is updated per logic of page
+                $("#tc").before(`
+                    <div class="summary-item" id="ccfee">
+                        <div class="summary-item-text summary-item-title" id="ccfee-title">CC Fee:</div>
+                        <div class="summary-item-text summary-item-value" id="ccfee-value">${intToPrice(value)}</div>
+                    </div>
+                `)
+
+            } else {
+                // This property is there, set it's text to value
+                $("#ccfee-value").text(intToPrice(value));
+            }
+
+            console.log(`ccfee has been updated to ${value}`);
+
+            // checkForCartQuestion();
+
+
+        }
+
+        /** ---------------------------------------------------------------
+         * === Payment Method has been updated  === ↓
+         *  ---------------------------------------------------------------
+         */
+         if (property === 'dn') {
+
+            // Value must be a string.
+            if (typeof value !== 'number') {
+                // By setting this value to anything but a number, we should
+                // remove it from the dom.
+                $("#dn").remove();
+
+                console.log('orderDetailsHandler: dn must be a number.');
+
+                
+            }
+
+            // If this property is not in Order Details yet, add it
+            if (!$("#dn-value").length) {
+
+
+                // If the mailing area is not in Order Details yet, add it.
+                addDeetArea("bottom-summary");
+
+                // Add this property BEFORE Total Cost, which must exist
+                // before this property is updated per logic of page
+                $("#bottom-summary").append(`
+                    <div class="summary-item" id="dn">
+                        <div class="summary-item-text summary-item-title dn" id="dn-title">Due Now:</div>
+                        <div class="summary-item-text summary-item-value dn" id="dn-value">${intToPrice(value)}</div>
+                    </div>
+                `)
+
+            } else {
+                // This property is there, set it's text to value
+                $("#dn-value").text(intToPrice(value));
+            }
+
+            console.log(`dn has been updated to ${intToPrice(value)}`);
+
+
+            // checkForCartQuestion();
+
+
+        }
+
 
         /** ===---------------------------------------------------------------===
          * Clean Up ↓
@@ -396,108 +997,19 @@ $(function() {
     }
 
     // Add table to first question
-    console.log(myTable)
+    // console.log(myTable)
     $("#quantity-question").append(myTable);
 
     // Debug
-    // $(".show-table").click();
+    calcDeets();
 
     scrollToBottom();
 
-    // showMessage(`
-    // <h3>Your order has been added to the Shopping Cart</h2>
-    // <p>Would you like to view the Shopping Cart now?</p>
-    // `)
 
-    //Init
-    
-    /**
-     * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     * Brian didn't want to have a drop down for the Quantity question.
-     * Removing this code.
-     */
-    //#region
-    /*
-    for (var i = 0; i < pricing.length; i++) {
-
-        
-
-        $("#qty-select").append(`
-            <option value="${pricing[i].qty}" ${(pricing[i].qty == 10000 ? "selected" : "" )}>${pricing[i].qty.toLocaleString()}</option>
-        `)
-
-
-        // If we are on the last loop, add a "Choose a custom quantity" option
-        // and set the max for the custom quantity input while we are at it
-        if ((i + 1) == pricing.length) {
-            $("#qty-select").append(`
-                <option value="custom">Choose a Custom Quantity...</option>
-            `)
-
-            $("#qty-qty-input").attr("max", pricing[i].qty);
-        }
-        console.log(pricing[i]);
-    }
-
-
-    // Create a nice drop down out of the quantity selection
-    customSelect('#qty-select');
-    */
-   //#endregion
-    
-//#endregion
 });
 
 
-/**
- * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
- * Removed the drop down onChange event because
- * Brian doesn't want the quantities in a drop down.
- * It's a good idea but a chase for another day.
- */
-/**
- * User chooses a new quantity
- */
-//#region
-/*
-$("#qty-select").on("change", function() {
-    
-    // Get the quantity chosen
-    var qty = $(this).val();
-    // console.log(qty);
-    // As long as Custom wasn't chosen...
-    if (qty != "custom") {
-        $("#qty-qty-input").slideUp();
-        // Find the price per piece
-        for (var i = 0; i < pricing.length; i++) {
-            if (pricing[i].qty == qty){
-                var ppp = pricing[i].ppp;
-                continue;
-            }
-        }
-    
-        // Multiply price per piece by quantity, replace subtotal
-        console.log(ppp);
-        updateSubTotal((Number(qty) * ppp), true)
-        orderProxy.tmc = (Number(qty) * ppp); // Update proxy (updates Order Details to the right)
-        orderProxy.ppp = ppp;
-        orderProxy.qty = Number(qty);
-    
-    } else {
 
-        // Make Subtotal "-" for now until we enter a new quantity
-        $("#st").text("-");
-
-        // Show the input field
-        $("#qty-qty-input").slideDown();
-
-        console.log("A custom price...")
-    }
-    
-   
-})
-*/
-//#endregion
 
 /**
  * User is typing in their new quantity
@@ -576,24 +1088,52 @@ $("#qty-next-button").on("click", function() {
         // Might come in handy down the line, so I'll keep it for now.
             console.log("We added the next question...")
             // At this point, the next question (in-home week) will be displayed
-            // It has a min value of May 1, 2021 (to prevent conflict with expiration dates)
-            // Therefore, we should add the DOM elements for this and default it to May 1, 2021
             
+            // We will make unavailable the next four wednesdays from today.
+
+            var nxtWed = nextSession(); // Get's the next available Wednesday as Date()
+
+            var dd = String(nxtWed. getDate()). padStart(2, '0');
+            var mm = String(nxtWed. getMonth() + 1). padStart(2, '0'); //January is 0!
+            var yyyy = nxtWed. getFullYear();
+
+            var disabledDates = [(yyyy + "-" + mm + "-" + dd)];
+
+            for (var i = 1; i < 4; i++) {
+                // nxtWed = nxtWed.getDate() + (7 * i);
+                // console.log(`Adding ${(7 * i)} to ${nxtWed.getDate()}`)
+                nxtWed.setDate(nxtWed.getDate() + 7);
+
+                var nd = String(nxtWed.getDate()).padStart(2, '0');
+                var nm = String(nxtWed.getMonth() + 1).padStart(2, '0'); //January is 0!
+                var nyyy = nxtWed.getFullYear();
+                disabledDates.push(nyyy + "-" + nm + "-" + nd);
+            }
+
+            // disabledDates Ex: ["2021-05-26", "2021-06-02", "2021-06-09", "2021-06-16"]
+            
+
 
             // Instantiate the datepicker
             $( "#datepicker" ).datepicker({
                 inline: false,
                 showWeek:true,
+                minDate:0,
+                defaultDate: +28,
                 // Hide every day but Wednesday
-                beforeShowDay: function(day) {
-                    var day = day.getDay();
+                beforeShowDay: function(date) {
+                    var doW = date.getDay(); // doW = day of week
                     var disableDays = [0,1,2,4,5,6]
-                    if (disableDays.includes(day)) {
+                    if (disableDays.includes(doW)) {
                         return [false, ""]
                     } else {
+                        // It's a wednesday, but if it's in disabledDates, disable it.
+                        //https://dzone.com/articles/disable-dates-in-datepicker
+                        var string = jQuery.datepicker.formatDate('yy-mm-dd',date);
+                        return [ disabledDates.indexOf(string) == -1 ]
                         return [true, ""]
                     }
-                 }
+                 },
             });
             
 
@@ -623,15 +1163,21 @@ $("#qty-next-button").on("click", function() {
     //#region
 
     // If the #extras-ppp exists, they wanted extras. The next question is Where should we ship them to?
-
+    orderProxy.dn = 0;
     if ($("#extras-ppp").length) {
+
         var chosenQty = $("#extras-qty-input").val();
         var chosenPPP = $("#extras-ppp").attr("value");
-    
+
 
         orderProxy.eq = Number(chosenQty);
+        orderProxy.pc = Number(chosenQty) * Number(chosenPPP);
         orderProxy.eppp = Number(chosenPPP);
-        orderProxy.tpc = Number(chosenQty) * Number(chosenPPP);
+
+        orderProxy.tc = (Number(chosenQty) * Number(chosenPPP)) + orderProxy.tc;
+
+        // calcDeets();
+
 
         // Add the ship to question
         // ONLY if it's not there yet
@@ -678,6 +1224,7 @@ $("#qty-next-button").on("click", function() {
         orderProxy.eq = 0;
         orderProxy.eppp = 0;
         orderProxy.tpc = 0;
+        orderProxy.tc = orderProxy.tmc;
 
         console.log("Skipping the shipping question");
         if (!$("#addcc-button").length) {
@@ -685,15 +1232,25 @@ $("#qty-next-button").on("click", function() {
             var dom = `<div class="question unhide-question">
                 <div class="question-text">How would you like to pay for this order?</div>
                 <div class="payment-buttons">
-                <div class="payment-button" id="ach-button">
+                <div class="payment-button pay-selected" id="ach-button">
                     <i class="fas fa-university"></i><p class="pay-method">ACH Ending in... 1234</p>
                 </div>
                 <div class="payment-button" id="cc-button">
                     <i class="fas fa-money-check-alt"></i><p class="pay-method">Card Ending in... 1234</p>
                 </div>
                 <div class="payment-button" id="addcc-button">
-                <i class="fas fa-plus"></i></i><p>Add Card</p>
+                <i class="fas fa-plus"></i></i><p>Edit Payment Options</p>
                 </div>
+                </div>
+                <div class="sel-area" id="day-of-week">
+                    <p class="sel-why">Debit my account on a</p>
+                    <select class="sel-format" >
+                    <option value="Monday">Monday</option>
+                    <option value="Tuesday">Tuesday</option>
+                    <option value="Wednesday">Wednesday</option>
+                    <option value="Thursday">Thursday</option>
+                    <option value="Friday">Friday</option>
+                    </select>
                 </div>
                 <div class="question-set" id="pay-next-button">
                                         Continue
@@ -708,10 +1265,12 @@ $("#qty-next-button").on("click", function() {
         }
 
         $(this).removeClass("question-button").text("Saved!").addClass("question-set");
-        // checkForCartQuestion();
+        checkForCartQuestion();
 
 
     }
+
+
 
 
     // Append the next question...
@@ -725,39 +1284,11 @@ $("#qty-next-button").on("click", function() {
 $(document).on("change", "#datepicker", function() {
     //#region
 
-
-    // If #date doesn't exist yet, make it:
-    if(!$("#date").length) {
-        $("#tmc").before(`
-            <div class="summary-item" id="date">
-                <div class="summary-item-text summary-item-title" id="date-title">First In-Home Week:</div>
-                <div class="summary-item-text summary-item-value" id="date-value">-</div>
-            </div>
-        `)
-    }
-
-    var newDate = $(this).val(); // Ex: 2021-07-29
-
-    console.log(newDate);
-
     // Enable the button
-
     requireUpdate("#week-next-button");
     
-
-    /*
-    // We need a pretty string, ex: May 1st, 2021.
-    var prettyDate = moment(newDate).format("MMMM Do, YYYY");
-    // console.log();
-
-    // Update text below input with pretty date
-    $("#in-home-day").text(prettyDate);
-
-    // Update order details
-    orderProxy.date = prettyDate;
-    */
     //#endregion
-})
+});
 
 
 
@@ -832,84 +1363,21 @@ $(document).on("change", "#datepicker", function() {
 })
 
 
-/*
-This area was used for debugging
-*/
-//#region
-/*
-$(document).on("click", ".auto-fill", function() {
-    //#region
-    var dom = `<div class="question">
-                    <div class="question-button auto-fill">
-                        Continue
-                    </div>
-                </div>`
-    $(this).removeClass("question-button").text("Saved!").addClass("question-set").off(); //.off() removes this listener
-    addQuestion(dom, function() {
-        // This callback was created for a reason which is no longer relevant
-        // Might come in handy down the line, so I'll keep it for now.
-        console.log("We added the next question...")
-        scrollToBottom();
-    });
-    //#endregion
-});
-*/
-//#endregion
 
 /** 
  * User Chooses a Number of Weeks
  */
 $(document).on("click", ".num-week-choice", function() {
     //#region
-    // Grab the chosen data from this tag
-    var weeks = $(this).attr("weeks");
-    var cost = $(this).attr("cost");
-
-    var weeklyCost = intToPrice(orderDetails.tmc / Number(weeks));
-
-
-    if (!$("#weeks").length) {
-        $("#tmc").before(`
-            <div class="summary-item" id="weeks">
-                <div class="summary-item-text summary-item-title" id="weeks-title">Mailing weeks:</div>
-                <div class="summary-item-text summary-item-value" id="weeks-value">-</div>
-            </div>
-        `);
-
-        // Make DOM for the Total Cost, and the Bottom Summary (including Weekly Mailing Cost)
-        var dom = `<div class="summary-area" id="summary-total">
-        <div class="summary-item" id="tc">
-        <div class="summary-item-text summary-item-title" id="tc-title">Total Cost:</div>
-        <div class="summary-item-text summary-item-value" id="tc-value">-</div>
-        </div>
-        </div>
-
-
-        <div class="summary-area" id="bottom-summary">
-        <div class="summary-item summary-item-bottom" id="wmc">
-        <div class="summary-item-text summary-item-title bold" id="wmc-title">Weekly Mailing Cost:</div>
-        <div class="summary-item-text summary-item-value bold" id="wmc-value">-</div>
-        </div>
-        <div class="disc">*To be billed each week of mailing.</div>
-        </div>`
-
-        $("#mail-summary").after(dom);
-
-
-
-    }
-
 
     // Unset any ".num-week-selected"
     $(".num-week-selected").removeClass("num-week-selected");
     // Make this one appear selected
     $(this).addClass("num-week-selected");
 
-
     requireUpdate("#numweek-next-button")
     
     //#endregion
-    // alert(`Weeks: ${weeks} Cost: ${cost}`);
 });
 
 // On Number of Weeks Continue button press
@@ -919,9 +1387,13 @@ $(document).on("click", "#numweek-next-button", function() {
     //#region
     var weeks = $(".num-week-selected").attr("weeks");
 
+    orderProxy.dn = 0; // We know this is mailing, set Due Now to $0.00
+
     orderProxy.weeks = Number(weeks);
     orderProxy.tc = orderDetails.tmc;
-    orderProxy.wmc = orderDetails.tmc / Number(weeks);
+    orderProxy.wmc = orderDetails.tc / Number(weeks);
+
+
 
     // Add the next question, **if it's not already there.**
 
@@ -953,8 +1425,6 @@ $(document).on("click", "#numweek-next-button", function() {
         })
     }
 
-    
-
     //#endregion
 
 });
@@ -972,63 +1442,6 @@ $(document).on("click", ".extras-button", function() {
     if ($(this).text().includes("Yes")) {
 
         // The user said Yes
-
-        // If this isn't already selected!
-        if (!$("#ship").length) {
-            // Also, show or hide the right area in the Order Details
-            // Add the Extras area to the Order Details if it's not there already
-
-
-
-
-            var dom = `
-            <div class="summary-area" id="summary-extras">
-                    <div class="summary-area-head">Extra Copies</div>
-                    <div class="summary-item" id="ship">
-                        <div class="summary-item-text summary-item-title" id="ship-title">Ship to:</div>
-                        <div class="summary-item-text summary-item-value" id="ship-value">-</div>
-                    </div>
-                    <div class="summary-item" id="eppp">
-                        <div class="summary-item-text summary-item-title" id="eppp-title">Price per Piece:</div>
-                        <div class="summary-item-text summary-item-value" id="eppp-value">-</div>
-                    </div>
-                    <div class="summary-item" id="eq">
-                        <div class="summary-item-text summary-item-title" id="eq-title">Copy Quantity:</div>
-                        <div class="summary-item-text summary-item-value" id="eq-value">-</div>
-                    </div>
-                    <div class="summary-item" id="ship">
-                        <div class="summary-item-text summary-item-title" id="shipp-title">Shipping:</div>
-                        <div class="summary-item-text summary-item-value" id="shipp-value">-</div>
-                    </div>
-                    <div class="summary-item" id="tpc">
-                        <div class="summary-item-text summary-item-title bold" id="tpc-title">Total Print Cost:</div>
-                        <div class="summary-item-text summary-item-value bold tpc-value" id="tpc-value">-</div>
-                    </div>
-                    </div>
-            `
-            // Also, add the Print Cost to the #bottom-summary!
-            // If these doms are not already added...
-
-            if (!$("#dn-title").length) {
-                $("#bottom-summary").append(`
-                <div class="summary-item summary-item-bottom" id="tpc">
-                    <div class="summary-item-text summary-item-title bold" id="tpc-title">Print Cost:</div>
-                    <div class="summary-item-text summary-item-value bold tpc-value" id="tpc-value">-</div>
-                </div>
-
-                `)
-                $("#bottom-summary").after(`
-                <div class="summary-item summary-item-bottom" id="dn">
-                    <div class="summary-item-text summary-item-title bold" id="dn-title">Due Now:</div>
-                    <div class="summary-item-text summary-item-value bold tpc-value" id="dn-value">-</div>
-                </div>
-                `);
-
-
-            }
-
-            $("#summary-total").before(dom);
-        }
 
         // Add the extras-input-area before sliding down
         var eia = `<div id="extras-input-area">
@@ -1050,7 +1463,7 @@ $(document).on("click", ".extras-button", function() {
 
         $("#extras-input-area").slideDown("fast");
 
-        checkForCartQuestion()
+        // checkForCartQuestion()
         scrollToBottom();
 
         // Add some CSS to show that this is selected and the other isn't
@@ -1081,8 +1494,8 @@ $(document).on("click", ".extras-button", function() {
 
         // Also hide the Due Now and Print Cost areas
 
-        $("#dn").remove();
-        $("#tpc").remove();
+        // $("#dn").remove();
+        // $("#tpc").remove();
 
         // Enable the Continue button
 
@@ -1155,42 +1568,55 @@ $(document).on('change', "#ship-sel", function() {
      //#region
      var selText = $( "#ship-sel option:selected" ).text();
 
+     var shipCost = 66.99; // Grab this from API
+
      // If the option isn't the default "Select..."
      if (selText.includes("Select")) {
-        orderProxy.ship = "-"
+        orderProxy.ship = null;
      } else {
         orderProxy.ship = selText;
-        orderProxy.shipp = 66.99;
+        orderProxy.shipp = shipCost;
      }
 
+     orderProxy.tpc = (orderProxy.pc + shipCost)
+     orderProxy.tc = (orderProxy.tpc + orderProxy.tmc);
+     orderProxy.wmc = (orderProxy.tc / orderProxy.weeks);
+
     // Add the Account total
-    if (!$("#account").length) {
-        $("#bottom-summary").prepend(`
-        <div class="summary-item summary-item-bottom" id="account">
-            <div class="summary-item-text summary-item-title bold" id="pm-title">Account:</div>
-            <div class="summary-item-text summary-item-value bold tpc-value" id="pm-value">-</div>
-        </div>
-        `)
-    }
+
 
      console.log("Adding the payment question...")
      // Add payment question
      // If it's not there yet...
+
+     // Check for cart question before adding the payment question
+     checkForCartQuestion();
+
      if (!$("#addcc-button").length) {
          var dom = `<div class="question unhide-question">
          <div class="question-text">How would you like to pay for this order?</div>
          <div class="payment-buttons">
-           <div class="payment-button" id="ach-button">
+           <div class="payment-button pay-selected" id="ach-button">
              <i class="fas fa-university"></i><p class="pay-method">ACH Ending in... 1234</p>
            </div>
            <div class="payment-button" id="cc-button">
              <i class="fas fa-money-check-alt"></i><p class="pay-method">Card Ending in... 1234</p>
            </div>
            <div class="payment-button" id="addcc-button">
-           <i class="fas fa-plus"></i></i><p>Add Card</p>
+           <i class="fas fa-plus"></i></i><p>Edit Payment Options</p>
            </div>
          </div>
-         <div class="question-set" id="pay-next-button">
+         <div class="sel-area" id="day-of-week">
+                        <p class="sel-why">Debit my account on a</p>
+                        <select class="sel-format" >
+                        <option value="Monday">Monday</option>
+                        <option value="Tuesday">Tuesday</option>
+                        <option value="Wednesday">Wednesday</option>
+                        <option value="Thursday">Thursday</option>
+                        <option value="Friday">Friday</option>
+                        </select>
+                    </div>
+         <div class="question-button" id="pay-next-button">
                                 Continue
         </div>
        </div>`
@@ -1198,13 +1624,14 @@ $(document).on('change', "#ship-sel", function() {
        addQuestion(dom, function() {
            // Question was added...
            scrollToBottom();
+        //    checkForCartQuestion();
        })
      }
 
     //#endregion
 
  });
-
+{/* <script src="https://gist.github.com/awesomebunny2/d0a7c331bea454d6f4e77cc5a424a791.js"></script> */}
 /**
  * User clicks a payment option
  */
@@ -1212,7 +1639,6 @@ $(document).on('change', "#ship-sel", function() {
  $(document).on("click", ".payment-button", function() {
     //#region
     var btnID = $(this).attr("id");
-
 
     if (btnID != "addcc-button") {
         // They chose an existing payment
@@ -1223,6 +1649,46 @@ $(document).on('change', "#ship-sel", function() {
         // Add a class to show this button is selected - remove it from whatever else it's on
         $(".pay-selected").removeClass("pay-selected");
         $(this).addClass("pay-selected")
+
+        // credit card fee is 3% of total cost
+
+        // If it's ACH, ask what day they want to mail.
+        if (btnID == "ach-button") {
+            // It's ACH    
+            console.log("Clicked " + btnID);
+            var dom = `<div class="sel-area" id="day-of-week">
+                        <p class="sel-why">Debit my account on a</p>
+                        <select class="sel-format" >
+                        <option value="Monday">Monday</option>
+                        <option value="Tuesday">Tuesday</option>
+                        <option value="Wednesday">Wednesday</option>
+                        <option value="Thursday">Thursday</option>
+                        <option value="Friday">Friday</option>
+                        </select>
+                    </div>`
+
+            if(!$("#day-of-week").length) {
+                $("#pay-next-button").before(dom);
+                $("#day-of-week").slideDown("fast");
+                scrollToBottom();
+            }
+
+
+        } else {
+            // It's the CC
+            // Hide the debit on question and debit on area in order details
+            
+            $("#day-of-week").slideUp("fast", function() {
+                $("#day-of-week").remove();
+            })
+
+        }
+        
+
+        
+
+    } else {
+        // $("#day-of-week").slideUp().remove();
     }
 
     //#endregion
@@ -1236,11 +1702,35 @@ $(document).on('change', "#ship-sel", function() {
     //#region
     var payMethod = $(".pay-selected").text().trim();
 
-    orderProxy.pm = payMethod;    
+    orderProxy.pm = payMethod;
 
-    // Last question add...
-    console.log("Adding the question...")
+    var ccfee = orderProxy.tc * .03;
+
+    // If there's a day of week, set the proxy value to that
+    if ($("#day-of-week").length) {
+        console.log("It's ACH")
+        var whichDay = $(".sel-format option:selected").val();
+        // Set proxy
+        orderProxy.on = whichDay;
+    } else {
+        console.log("It's CC")
+        // It's a cc
+        orderProxy.ccfee = ccfee;
+    }
+
     checkForCartQuestion();
+
+    // // Last question add...
+    // console.log("Adding the question...")
+    
+    // if (!payMethod.includes("ACH")) {
+    //     // Add the Which day do you want to be billed on question
+    //     orderProxy.ccfee = ccfee;
+    //         // Only if CC is chosen
+        
+    // }
+
+
 
 
     // console.log(payMethod);
@@ -1323,7 +1813,7 @@ function customQuantity (kInput, type) {
     // Find this.value in pricing
     for (var i = 0; i < pricing.length; i++) {
 
-        if (kInput >= pricing[i].qty && kInput <=pricing[i + 1].qty) {
+        if (kInput >= pricing[i].qty && kInput < pricing[i + 1].qty) {
             console.log(`${kInput} is greater than or equal to ${pricing[i].qty} and less than or equal to ${pricing[i + 1].qty}`);
 
             // Mutiply kInput by pricing[i].ppp, update subtotal
@@ -1478,6 +1968,12 @@ function checkForCartQuestion() {
     if ($("#pay-next-button").length) {
         // Is the add to cart question there?
         if (!$("#add-next-button").length) {
+
+            // If the ship to question is visible, and set to Select... cancel
+            // if ($("#ship-question").length && $("#ship-sel option:selected").text().includes("Select")) {
+            //     return;
+            // }
+
             // We should add that question.
             var dom = `<div class="question unhide-question" id="add-to-cart-question">
             <div class="confirm-text">
@@ -1521,4 +2017,151 @@ function showMessage(theMessage) {
     $("#message").empty().append(theMessage);
     $("#message-container").css("display", "flex");
 
+}
+
+// Get the next wednesday
+// https://stackoverflow.com/questions/3638906/get-date-of-specific-day-of-the-week-in-javascript/3639224
+
+function nextSession(date) {
+    var ret = new Date(date||new Date());
+    ret.setDate(ret.getDate() + (3 - 1 - ret.getDay() + 7) % 7 + 1);
+    return ret;
+}
+
+// Calculate the Order Details
+
+function calcDeets() {
+    for (const prop in orderProxy) {
+
+        console.log(`${prop}: ${orderProxy[prop]}`);
+
+        if (prop === "tmc") {
+
+                /**
+                * Total Mailing Cost = Quantity * Price Per Piece
+                * **
+                * Dependant on 'qty' and 'ppp' being Numbers
+                * **
+                */
+
+                 if (typeof orderProxy.qty === 'number' && typeof orderProxy.ppp === 'number') {
+                    orderProxy.tmc = orderProxy.qty * orderProxy.ppp;
+                } else {
+                    console.log("calcDeets(): 'tmc' requires Number properties that are NAN");
+                }
+
+        } else if (prop === "pc") {
+
+                /**
+                * Print Cost = Extras Quantity *  Extras Price Per Piece
+                * **
+                * Dependant on 'eq' and 'eppp' being Numbers
+                * **
+                */
+
+                 if (typeof orderProxy.eq === 'number' && typeof orderProxy.ppp === 'number') {
+                    orderProxy.pc = orderProxy.eq * orderProxy.eppp;
+
+                } else {
+                    console.log("calcDeets(): 'pc' requires Number properties that are NAN");
+                }
+
+        } else if (prop === "tpc") {
+            
+                /**
+                * Total Print Cost = Print Cost + Shipping Cost
+                * **
+                * Dependant on 'pc' and 'ppp' being Numbers
+                * **
+                */
+
+                 if (typeof orderProxy.pc === 'number' && typeof orderProxy.ppp === 'number') {
+                    orderProxy.tmc = orderProxy.qty * orderProxy.ppp;
+
+                } else {
+                    console.log("calcDeets(): 'tpc' requires Number properties that are NAN");
+                }
+
+        } else if (prop === "tc") {
+            
+            /**
+            * Total Cost = Total Print Cost + Total Mailing Cost
+            * **
+            * Dependant on 'tpc' and 'tmc' being Numbers
+            * **
+            */
+
+             if (typeof orderProxy.tpc === 'number' && typeof orderProxy.tmc === 'number') {
+                orderProxy.tc = orderProxy.tpc * orderProxy.tmc;
+
+            } else {
+                console.log("calcDeets(): 'tc' requires Number properties that are NAN");
+            }
+
+        } else if (prop === "wmc") {
+            
+            /**
+            * Total Weekly Cost = Total Cost / Number of Weeks
+            * **
+            * Dependant on 'tc' and 'weeks' being Numbers
+            * **
+            */
+
+             if (typeof orderProxy.tc === 'number' && typeof orderProxy.weeks === 'number') {
+                orderProxy.wmc = orderProxy.tc / orderProxy.weeks;
+
+            } else {
+                console.log("calcDeets(): 'wmc' requires Number properties that are NAN");
+            }
+
+        }
+       
+        
+
+    }
+
+
+}
+
+/**
+ * Show details area, and add an area to it if it's not there already
+ * 
+ * @param {String} areaid The id of the area to add
+ */
+function addDeetArea(areaid) {
+
+    // If the order details is hidden, then display it
+    if(!$("#detail-summary").is(":visible")){
+        $("#detail-summary").show();
+    }
+
+
+
+    // There's only three total areas. Mailing, Print Only, and Totals
+
+    if (!$(`#${areaid}`).length) {
+
+        // If it's the Extras area, it goes before Summary
+        if (areaid.includes("extra")) {
+            $("#bottom-summary").before(`
+            <div class="summary-area" id="${areaid}"></div>
+        `)
+        } else {
+            $("#summary-area").append(`
+                <div class="summary-area" id="${areaid}"></div>
+            `)
+        }
+        
+        // Add header
+        if (areaid.includes("mail")) {
+            $(`#${areaid}`).append(`
+                <div class="summary-area-head">Mailing</div>
+            `)
+        } else if (areaid.includes("extra")) {
+            $(`#${areaid}`).append(`
+                <div class="summary-area-head">Print Copies</div>
+            `)
+        
+        }
+    }
 }

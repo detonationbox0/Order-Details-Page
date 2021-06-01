@@ -1,0 +1,39 @@
+#content-head {
+    min-height:65px !important;
+}
+
+#content-body {
+    height:Calc(100vh - 105px) !important;
+}
+
+#tabs {
+    min-height:35px !important;
+}
+
+#detail-questions {
+    max-height:Calc(100vh - 142px);
+
+}
+
+#summary-area, #summary-head {
+    margin:auto;
+}
+
+#summary-area {
+    height:unset;
+}
+
+#summary-head {
+    margin-top:25px;
+}
+
+#detail-summary {
+    width:50%;
+    max-height:Calc(100vh - 142px);
+    /* display:unset; */
+    flex-direction:unset;
+    align-items: unset;
+    justify-content: unset;
+    overflow-y:auto;
+
+}
