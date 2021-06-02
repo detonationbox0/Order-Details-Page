@@ -1108,7 +1108,8 @@ $("#qty-next-button").on("click", function() {
                 inline: false,
                 showWeek:true,
                 minDate:+28,
-                defaultDate: '+28d',
+                defaultDate: '+29d',
+                gotoCurrent: true,
                 // Hide every day but Wednesday
                 beforeShowDay: function(date) {
                     var doW = date.getDay(); // doW = day of week
