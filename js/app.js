@@ -1,6 +1,5 @@
 /**
- * In a hurry to finish this up, the code got a bit messy.
- * Sorry!
+ * This code got a bit messy...
  */
 
 
@@ -13,20 +12,6 @@ const pricing = priceGrid.getGrid();
 console.log(pricing);
 
 // Create pricing table DOM
-
-/*
-        <div class="price-headers tablerow">Quantity</div>
-        <div class="tier tablerow">500</div>
-        <div class="tier tablerow">1,000</div>
-        <div class="tier tablerow">1,500</div>
-*/
-
-/*
-        <div class="price-headers tablerow">Cost</div>
-        <div class="cost tablerow">$0.32</div>
-        <div class="cost tablerow">$0.79</div>
-        <div class="cost tablerow">$0.69</div>
-*/
 
 var tableQty = "";
 var tableCosts = "";
@@ -49,18 +34,17 @@ const myTable = `<div class="toggler">
     </div>
 </div>`
 
-// console.log(myTable);
 
 /**
- ___   ___   ___   _     _     
-| |_) | |_) / / \ \ \_/ \ \_/
-|_|   |_| \ \_\_/ /_/ \  |_| 
+ ▄▄▄·▄▄▄        ▐▄• ▄  ▄· ▄▌
+▐█ ▄█▀▄ █·▪      █▌█▌▪▐█▪██▌
+ ██▀·▐▀▀▄  ▄█▀▄  ·██· ▐█▌▐█▪
+▐█▪·•▐█•█▌▐█▌.▐▌▪▐█·█▌ ▐█▀·.
+.▀   .▀  ▀ ▀█▄▀▪•▀▀ ▀▀  ▀ • 
  */
 
 /**
- * Let's use this
  * https://www.javascripttutorial.net/es6/javascript-proxy/
- * to update the Order Details area on the right side of the page.
  */
 
 // ORDER OBJECT
@@ -993,9 +977,7 @@ var orderProxy = new Proxy(orderDetails, orderDetailsHandler);
 // Updating the properties of orderProxy updates the Order Details area on the right side of the page.
 
 /**
-  __    ___   ___   _     _   __     __   _____  _   ___   _     
- / /\  | |_) | |_) | |   | | / /`   / /\   | |  | | / / \ | |\ | 
-/_/--\ |_|   |_|   |_|__ |_| \_\_, /_/--\  |_|  |_| \_\_/ |_| \|
+APPLICATION ↓
  */
 
 // Document is ready...
@@ -1070,18 +1052,11 @@ $("#qty-next-button").on("click", function() {
         // Build the In Home Week question, and add it to the dom
 
         /*
-        The "date" type input does not work on Firefox or Safari.
-        Why not??
-        Jim used Drop Downs but I don't like it. He does have
-        a datepicker though for the coupon expirations... it looks like
-        he used https://angular-ui.github.io/bootstrap/versioned-docs/1.0.0/#/datepicker
+        It looks like this was used https://angular-ui.github.io/bootstrap/versioned-docs/1.0.0/#/datepicker
+        for the Date type question.
 
-        I do not know Angular (I shall learn it someday soon), but jQuery UI has one
-        I'll use that instead.
-
-            > Only show the available days ("Wednesdays")
+        Here I will use jquery ui's datepicker instead.
         */
-
         var dom = `
         <!-- When would you like your first in-home week to be? -->
         <div class="question">
@@ -1132,8 +1107,8 @@ $("#qty-next-button").on("click", function() {
             $( "#datepicker" ).datepicker({
                 inline: false,
                 showWeek:true,
-                minDate:0,
-                defaultDate: +28,
+                minDate:+28,
+                defaultDate: '+28d',
                 // Hide every day but Wednesday
                 beforeShowDay: function(date) {
                     var doW = date.getDay(); // doW = day of week
@@ -1739,20 +1714,7 @@ $(document).on('change', "#ship-sel", function() {
 
     checkForCartQuestion();
 
-    // // Last question add...
-    // console.log("Adding the question...")
-    
-    // if (!payMethod.includes("ACH")) {
-    //     // Add the Which day do you want to be billed on question
-    //     orderProxy.ccfee = ccfee;
-    //         // Only if CC is chosen
-        
-    // }
 
-
-
-
-    // console.log(payMethod);
     //#endregion
  });
 
@@ -1796,7 +1758,9 @@ $(".message-button").on("click", function() {
 $(document).on("click", ".show-table", function() {
     var whichOne = $(this).attr("value");
     var questionID = whichOne + "-question"
-    $("#" + questionID).find(".toggler").slideToggle("fast");
+    $("#" + questionID).find(".toggler").slideToggle("fast", function() {
+        scrollToBottom();
+    });
     console.log($(this).text())
     if ($(this).text().includes("Show")) {
         $(this).text("Hide Price Guide");
@@ -1902,12 +1866,7 @@ function customQuantity (kInput, type) {
             requireUpdate(nextButtonID)
             
 
-            //The proxy should update when the user clicks Continue or Save.
-            /*
-            orderProxy.tmc = (kInput * pricing[pricing.length - 1].ppp); // Update proxy (updates Order Details to the right)
-            orderProxy.ppp = pricing[pricing.length - 1].ppp;
-            orderProxy.qty = kInput;
-            */
+            
             break;
             
         }
@@ -1977,10 +1936,6 @@ function requireUpdate(refid) {
             
         })
 
-        // $(".add-to-cart-button").slideUp("fast", function() {
-        //     $(this).remove();
-        // })
-
     }
 
 }
@@ -2026,8 +1981,7 @@ function checkForCartQuestion() {
             if (!$(".summary-add-to-cart-buttons-container").length) {
 
 
-                // <div class="due-now"><div id="dn-name">Due Now:</div><div id="dn-value">$${orderProxy.dn}.00</div></div>
-
+                // Append the Cart and Save buttons to the order details summary
                 $("#detail-summary").append(`
 
                 <div class="summary-add-to-cart-buttons-container">
@@ -2036,14 +1990,7 @@ function checkForCartQuestion() {
                 </div>
                 `);
 
-                // $("#summary-area").append(`
-                // <div class="add-to-cart-buttons">
-                //     <div class="question-button add-to-cart-button add-to-cart-button summary-add-button" value="add" >Add to cart</div>
-                //     <div class="question-button add-to-cart-button add-to-cart-button summary-add-button" value="save">Save for Later</div>
-                // </div>
-                // `);
             }
-            // Append the Cart and Save buttons to the order details summary
             
             
             
@@ -2173,7 +2120,6 @@ function addDeetArea(areaid) {
     if(!$("#detail-summary").is(":visible")){
         $("#detail-summary").css("display", "flex");
     }
-
 
 
     // There's only three total areas. Mailing, Print Only, and Totals
