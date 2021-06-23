@@ -356,7 +356,7 @@ var orderDetailsHandler = {
                 // Add this property
                 $("#dn").before(`
                     <div class="summary-item" id="tc">
-                        <div class="summary-item-text summary-item-title bold" id="tc-title">Grand Total:</div>
+                        <div class="summary-item-text summary-item-title bold" id="tc-title">Product Total:</div>
                         <div class="summary-item-text summary-item-value bold" id="tc-value">${intToPrice(value)}</div>
                     </div>
                 `)
