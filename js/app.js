@@ -1729,13 +1729,13 @@ $(document).on("click", ".add-to-cart-button, .summary-add-to-cart-buttons", fun
     var thisVal = $(this).attr("value");
     if (thisVal == "add") {
         showMessage(`
-            <h3>Your order has been added to the Shopping Cart</h2>
+            <h3>Your product has been added to the Shopping Cart</h2>
             <p>Would you like to view the Shopping Cart now?</p>
         `)
     } else if (thisVal == "save") {
         showMessage(`
-            <h3>Your order has been Saved for Later</h2>
-            <p>Would you like to return to the Place an Order page?</p>
+            <h3>Your product has been Saved for Later</h2>
+            <p>Would you like to return to the Add a Product page?</p>
         `)
     }
 
